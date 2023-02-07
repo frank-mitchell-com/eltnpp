@@ -3,12 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/fmitchell/Projects/eltnpp/src/com/frank_mitchell/eltnpp/spi/DefaultEltnPullParserFactory.java</file>
             <file>file:/home/fmitchell/Projects/eltnpp/test/com/frank_mitchell/eltnpp/spi/DefaultEltnPullParserTest.java</file>
-            <file>file:/home/fmitchell/Projects/eltnpp/src/com/frank_mitchell/eltnpp/spi/DefaultEltnPullParser.java</file>
-            <file>file:/home/fmitchell/Projects/eltnpp/src/com/frank_mitchell/eltnpp/EltnPullParser.java</file>
-            <file>file:/home/fmitchell/Projects/eltnpp/src/com/frank_mitchell/eltnpp/EltnEvent.java</file>
-            <file>file:/home/fmitchell/Projects/eltnpp/src/com/frank_mitchell/eltnpp/EltnPullParserFactory.java</file>
         </group>
     </open-files>
 </project-private>

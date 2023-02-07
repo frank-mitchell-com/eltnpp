@@ -35,7 +35,22 @@ import java.math.BigDecimal;
  * @see https://lua.org/
  */
 public interface EltnPullParser {
+    /**
+     * Checks whether the underlying stream has more ELTN elements.
+     * 
+     * @return whether the stream has more ELTN elements.
+     * @throws IOException if the character source could not be read.
+     */
+    public boolean hasNext() throws IOException;
     
+    /**
+     * Advances to the next significant ELTN element in the
+     * underlying stream.
+     * 
+     * @throws IOException if the character source could not be read.
+     */
+    public void next() throws IOException;
+
     /**
      * Get the event parsed by the most recent call to {@link #next()}.
      * 
@@ -47,9 +62,9 @@ public interface EltnPullParser {
      * Indicates if the enclosing value is a ELTN Table.
      * 
      * If this object is currently processing the contents of a ELTN Table,
-     * this method will return <code>true</code>.
+     * this method will return {@code true}.
      * 
-     * @return <code>true</code> if the enclosing value is a ELTN Table.
+     * @return {@code true} if the enclosing value is a ELTN Table.
      * 
      * @see #isInObject() 
      */
@@ -59,9 +74,9 @@ public interface EltnPullParser {
      * Indicates if the current value is a key in an ELTN table.
      *
      * If this object is currently processing the contents of a table key, this
-     * method will return <code>true</code>.
+     * method will return {@code true}.
      *
-     * @return <code>true</code> if the enclosing value is a ELTN Table.
+     * @return {@code true} if the enclosing value is a ELTN Table.
      *
      * @see #isInObject()
      */
@@ -104,11 +119,11 @@ public interface EltnPullParser {
      * 
      * @throws IllegalStateException if the current event is not a number.
      */
-    public BigDecimal getBigDecimal();
+    public Number getNumber();
     
 
     /**
-     * Gets the <code>double</code> value associated with the current event.
+     * Gets the {@code double} value associated with the current event.
      * 
      * If {@link #getEvent()} is {@link EltnEvent#VALUE_NUMBER},
      * this method returns an unspecified subclass of Number.
@@ -118,11 +133,16 @@ public interface EltnPullParser {
      * 
      * @throws IllegalStateException if the current event is not a number.
      */
-    public double getDouble() throws IllegalStateException;
-
+    default public double getDouble() throws IllegalStateException {
+        Number n = getNumber();
+        if (n == null) {
+            throw new IllegalStateException("!" + EltnEvent.VALUE_NUMBER);
+        }
+        return n.doubleValue();
+    }
     
     /**
-     * Gets the <code>int</code> value associated with the current event.
+     * Gets the {@code int} value associated with the current event.
      * 
      * If {@link #getEvent()} is {@link EltnEvent#VALUE_NUMBER},
      * this method returns an unspecified subclass of Number.
@@ -132,10 +152,15 @@ public interface EltnPullParser {
      * 
      * @throws IllegalStateException if the current event is not a number.
      */
-    public int getInt() throws IllegalStateException;
-
+    default public int getInt() throws IllegalStateException {
+        Number n = getNumber();
+        if (n == null) {
+            throw new IllegalStateException("!" + EltnEvent.VALUE_NUMBER);
+        }
+        return n.intValue();
+    }
     /**
-     * Gets the <code>long</code> value associated with the current event.
+     * Gets the {@code long} value associated with the current event.
      * 
      * If {@link #getEvent()} is {@link EltnEvent#VALUE_NUMBER},
      * this method returns an unspecified subclass of Number.
@@ -146,7 +171,7 @@ public interface EltnPullParser {
      * @throws IllegalStateException
      */
     default public long getLong() throws IllegalStateException {
-        Number n = getBigDecimal();
+        Number n = getNumber();
         if (n == null) {
             throw new IllegalStateException("!" + EltnEvent.VALUE_NUMBER);
         }
@@ -154,7 +179,7 @@ public interface EltnPullParser {
     }
 
     /**
-     * Gets a <code>boolean</code> value for the current event.
+     * Gets a {@code boolean} value for the current event.
      * 
      * If {@link #getEvent()} is {@link EltnEvent#VALUE_FALSE} or
      * {@link EltnEvent#VALUE_NIL}, this method returns false.
@@ -167,26 +192,5 @@ public interface EltnPullParser {
     default public boolean getBoolean() throws IllegalStateException {
         EltnEvent event = getEvent();
         return event != EltnEvent.VALUE_NIL && getEvent() != EltnEvent.VALUE_FALSE;
-    }
-
-    /**
-     * Advances to the next significant ELTN element in the
-     * underlying stream.
-     * 
-     * @throws IOException if the character source could not be read.
-     */
-    public void next() throws IOException;
-    
-    /**
-     * Equivalent to calling {@link #next()} followed by
-     * {@link #getEvent()}.
-     * 
-     * @return most recently parsed event.
-     *
-     * @throws IOException if the character source could not be read
-     */
-    default public EltnEvent nextEvent() throws IOException {
-        next();
-        return getEvent();
     }
 }

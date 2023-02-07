@@ -23,14 +23,10 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
-import com.frank_mitchell.eltnpp.EltnEvent;
-import java.math.BigDecimal;
+import com.frank_mitchell.eltnpp.*;
+import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -38,133 +34,29 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class DefaultEltnPullParserTest {
     
-    public DefaultEltnPullParserTest() {
-    }
-    
-    @BeforeAll
-    public static void setUpClass() {
-    }
-    
-    @AfterAll
-    public static void tearDownClass() {
-    }
-    
+    private EltnPullParserFactory _factory;
+    private EltnPullParser _parser;
+    private StringBuffer _buffer;
+    private 
+
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
+        _factory = new DefaultEltnPullParserFactory();
+        _buffer = new StringBuffer("  ");
+        _mockSource = new MockSource(_buffer);
+        _parser = _factory.createParser(_mockSource);
     }
-    
+
     @AfterEach
     public void tearDown() {
+        _factory = null;
+        _parser = null;
+        _mockSource = null;
     }
 
-    /**
-     * Test of getEvent method, of class DefaultEltnPullParser.
-     */
-    @Test
-    public void testGetEvent() {
-        System.out.println("getEvent");
-        DefaultEltnPullParser instance = null;
-        EltnEvent expResult = null;
-        EltnEvent result = instance.getEvent();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void push(CharSequence s) {
+        _buffer.append(s);
     }
-
-    /**
-     * Test of isInTable method, of class DefaultEltnPullParser.
-     */
-    @Test
-    public void testIsInTable() {
-        System.out.println("isInTable");
-        DefaultEltnPullParser instance = null;
-        boolean expResult = false;
-        boolean result = instance.isInTable();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of isInKey method, of class DefaultEltnPullParser.
-     */
-    @Test
-    public void testIsInKey() {
-        System.out.println("isInKey");
-        DefaultEltnPullParser instance = null;
-        boolean expResult = false;
-        boolean result = instance.isInKey();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getString method, of class DefaultEltnPullParser.
-     */
-    @Test
-    public void testGetString() {
-        System.out.println("getString");
-        DefaultEltnPullParser instance = null;
-        String expResult = "";
-        String result = instance.getString();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getBigDecimal method, of class DefaultEltnPullParser.
-     */
-    @Test
-    public void testGetBigDecimal() {
-        System.out.println("getBigDecimal");
-        DefaultEltnPullParser instance = null;
-        BigDecimal expResult = null;
-        BigDecimal result = instance.getBigDecimal();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDouble method, of class DefaultEltnPullParser.
-     */
-    @Test
-    public void testGetDouble() {
-        System.out.println("getDouble");
-        DefaultEltnPullParser instance = null;
-        double expResult = 0.0;
-        double result = instance.getDouble();
-        assertEquals(expResult, result, 0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getInt method, of class DefaultEltnPullParser.
-     */
-    @Test
-    public void testGetInt() {
-        System.out.println("getInt");
-        DefaultEltnPullParser instance = null;
-        int expResult = 0;
-        int result = instance.getInt();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of next method, of class DefaultEltnPullParser.
-     */
-    @Test
-    public void testNext() throws Exception {
-        System.out.println("next");
-        DefaultEltnPullParser instance = null;
-        instance.next();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    
     
 }

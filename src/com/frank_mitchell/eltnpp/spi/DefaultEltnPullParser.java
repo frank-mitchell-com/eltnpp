@@ -23,11 +23,16 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
+import com.frank_mitchell.codepoint.CodePoint;
+import com.frank_mitchell.codepoint.CodePointSource;
 import com.frank_mitchell.eltnpp.EltnEvent;
 import com.frank_mitchell.eltnpp.EltnPullParser;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Default implementation for {@link EltnPullParser}
@@ -36,9 +41,34 @@ import java.math.BigDecimal;
  */
 public class DefaultEltnPullParser implements EltnPullParser {
 
-    DefaultEltnPullParser(Reader reader) {
+    public DefaultEltnPullParser(InputStream in) {
+         this(in, StandardCharsets.UTF_8);
+    }
+   
+    public DefaultEltnPullParser(InputStream in, Charset cs) {
+        this(CodePoint.getSource(InputStream.class, in, cs));
     }
     
+    DefaultEltnPullParser(Reader reader) {
+        this(CodePoint.getSource(Reader.class, 
+                reader,
+                StandardCharsets.UTF_16BE));
+    }
+    
+    DefaultEltnPullParser(CodePointSource source) {
+        
+    }
+    
+    @Override
+    public boolean hasNext() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void next() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     @Override
     public EltnEvent getEvent() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -60,22 +90,7 @@ public class DefaultEltnPullParser implements EltnPullParser {
     }
 
     @Override
-    public BigDecimal getBigDecimal() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public double getDouble() throws IllegalStateException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public int getInt() throws IllegalStateException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void next() throws IOException {
+    public Number getNumber() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
