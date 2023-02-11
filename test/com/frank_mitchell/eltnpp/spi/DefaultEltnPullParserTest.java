@@ -23,10 +23,14 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
+import com.frank_mitchell.codepoint.CodePointSource;
 import com.frank_mitchell.eltnpp.*;
 import java.io.IOException;
+import static org.hamcrest.collection.IsIn.oneOf;
+import org.jmock.junit5.JUnit5Mockery;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -36,27 +40,31 @@ public class DefaultEltnPullParserTest {
     
     private EltnPullParserFactory _factory;
     private EltnPullParser _parser;
-    private StringBuffer _buffer;
-    private 
+
+    @RegisterExtension
+    private JUnit5Mockery _context = new JUnit5Mockery();
+
+    @Mock
+    CodePointSource _source;
 
     @BeforeEach
     public void setUp() throws IOException {
         _factory = new DefaultEltnPullParserFactory();
-        _buffer = new StringBuffer("  ");
-        _mockSource = new MockSource(_buffer);
-        _parser = _factory.createParser(_mockSource);
+        _parser = _factory.createParser(_source);
     }
 
     @AfterEach
     public void tearDown() {
         _factory = null;
         _parser = null;
-        _mockSource = null;
     }
 
-    public void push(CharSequence s) {
-        _buffer.append(s);
-    }
-    
-    
+    public void testParseSemicolon() {
+        _context.checking(new Expectations() {{
+            oneOf (_source).hasNext(); will(returnValue(true));
+            oneOf (_source).next();
+            oneOf (_source).getCodePoint(); will(returnValue((int)';'));
+        }});
+        
+    }    
 }

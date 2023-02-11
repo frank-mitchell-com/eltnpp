@@ -23,10 +23,10 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
+import com.frank_mitchell.codepoint.CodePointSource;
 import com.frank_mitchell.eltnpp.EltnPullParser;
 import com.frank_mitchell.eltnpp.EltnPullParserFactory;
 import java.io.IOException;
-import java.io.Reader;
 
 /**
  * Factory object for {@link DefaultEltnPullParser}.
@@ -36,7 +36,7 @@ import java.io.Reader;
 public class DefaultEltnPullParserFactory implements EltnPullParserFactory {
 
     @Override
-    public EltnPullParser createParser(Reader reader) throws IOException {
-        return new DefaultEltnPullParser(reader);
+    public EltnPullParser createParser(CodePointSource source) throws IOException {
+        return new DefaultEltnPullParser(source);
     }
 }

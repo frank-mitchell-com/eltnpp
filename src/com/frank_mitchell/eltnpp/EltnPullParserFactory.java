@@ -23,6 +23,8 @@
  */
 package com.frank_mitchell.eltnpp;
 
+import com.frank_mitchell.codepoint.CodePointSource;
+import com.frank_mitchell.codepoint.spi.ReaderSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,7 +46,9 @@ public interface EltnPullParserFactory {
      * @return a parser for the reader
      * @throws IOException 
      */
-    EltnPullParser createParser(Reader reader) throws IOException;
+    default EltnPullParser createParser(Reader reader) throws IOException {
+        return createParser(new ReaderSource(reader));
+    }
     
     /**
      * Creates a stream to parse UTF-8 characters.
@@ -60,4 +64,6 @@ public interface EltnPullParserFactory {
             throws IOException {
         return createParser(new InputStreamReader(stream, encoding));
     }
+    
+    EltnPullParser createParser(CodePointSource source) throws IOException;
 }
