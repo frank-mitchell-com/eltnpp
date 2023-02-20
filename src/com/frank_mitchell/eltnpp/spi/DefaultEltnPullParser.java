@@ -40,23 +40,22 @@ import java.nio.charset.StandardCharsets;
  * @author fmitchell
  */
 public class DefaultEltnPullParser implements EltnPullParser {
+    private final CodePointSource _source;
 
-    public DefaultEltnPullParser(InputStream in) {
+    public DefaultEltnPullParser(InputStream in) throws IOException {
          this(in, StandardCharsets.UTF_8);
     }
    
-    public DefaultEltnPullParser(InputStream in, Charset cs) {
-        this(CodePoint.getSource(InputStream.class, in, cs));
+    public DefaultEltnPullParser(InputStream in, Charset cs) throws IOException {
+        this(CodePoint.getSource(in, cs));
     }
     
-    DefaultEltnPullParser(Reader reader) {
-        this(CodePoint.getSource(Reader.class, 
-                reader,
-                StandardCharsets.UTF_16BE));
+    public DefaultEltnPullParser(Reader reader) throws IOException {
+        this(CodePoint.getSource(reader,StandardCharsets.UTF_16BE));
     }
     
-    DefaultEltnPullParser(CodePointSource source) {
-        
+    public DefaultEltnPullParser(CodePointSource source) {
+        _source = source;
     }
     
     @Override

@@ -189,8 +189,8 @@ public interface EltnPullParser {
      * 
      * @return the Boolean value of the current ELTN object
      */
-    default public boolean getBoolean() throws IllegalStateException {
+    default public boolean isTrue() throws IllegalStateException {
         EltnEvent event = getEvent();
-        return event != EltnEvent.VALUE_NIL && getEvent() != EltnEvent.VALUE_FALSE;
+        return event != EltnEvent.VALUE_NIL && event != EltnEvent.VALUE_FALSE;
     }
 }
