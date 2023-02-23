@@ -30,14 +30,13 @@ import com.frank_mitchell.eltnpp.EltnPullParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
  * Default implementation for {@link EltnPullParser}
  * 
- * @author fmitchell
+ * @author Frank Mitchell
  */
 public class DefaultEltnPullParser implements EltnPullParser {
     private final CodePointSource _source;
