@@ -23,15 +23,11 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
-import com.frank_mitchell.codepoint.CodePoint;
 import com.frank_mitchell.codepoint.CodePointSource;
+import com.frank_mitchell.eltnpp.EltnError;
 import com.frank_mitchell.eltnpp.EltnEvent;
 import com.frank_mitchell.eltnpp.EltnPullParser;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Default implementation for {@link EltnPullParser}
@@ -41,22 +37,10 @@ import java.nio.charset.StandardCharsets;
 public class DefaultEltnPullParser implements EltnPullParser {
     private final CodePointSource _source;
 
-    public DefaultEltnPullParser(InputStream in) throws IOException {
-         this(in, StandardCharsets.UTF_8);
-    }
-   
-    public DefaultEltnPullParser(InputStream in, Charset cs) throws IOException {
-        this(CodePoint.getSource(in, cs));
-    }
-    
-    public DefaultEltnPullParser(Reader reader) throws IOException {
-        this(CodePoint.getSource(reader,StandardCharsets.UTF_16BE));
-    }
-    
     public DefaultEltnPullParser(CodePointSource source) {
         _source = source;
     }
-    
+
     @Override
     public boolean hasNext() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -73,12 +57,32 @@ public class DefaultEltnPullParser implements EltnPullParser {
     }
 
     @Override
-    public boolean isInTable() {
+    public EltnError getError() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public boolean isInKey() {
+    public CharSequence getText() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public int getTextOffset() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public int getTextLineNumber() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public int getTextColumnNumber() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isInTable() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -91,5 +95,9 @@ public class DefaultEltnPullParser implements EltnPullParser {
     public Number getNumber() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
+    @Override
+    public boolean getBoolean() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

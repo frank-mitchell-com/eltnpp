@@ -23,15 +23,17 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
-import com.frank_mitchell.codepoint.CodePoint;
-import com.frank_mitchell.codepoint.CodePointSource;
-import com.frank_mitchell.eltnpp.*;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.frank_mitchell.codepoint.CodePointSource;
+import com.frank_mitchell.eltnpp.EltnError;
+import com.frank_mitchell.eltnpp.EltnEvent;
+import com.frank_mitchell.eltnpp.EltnPullParser;
+import com.frank_mitchell.eltnpp.EltnPullParserFactory;
+import java.io.IOException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +51,7 @@ public class DefaultEltnPullParserTest {
     @BeforeEach
     public void setUp() throws IOException {
         _builder = new StringBuilder();
-        _source = CodePoint.getSource(_builder, StandardCharsets.UTF_16);
+        _source = new FakeSource(_builder);
         _factory = new DefaultEltnPullParserFactory();
         _parser = _factory.createParser(_source);
     }
@@ -71,13 +73,13 @@ public class DefaultEltnPullParserTest {
         push(";");
         
         assertEquals(EltnEvent.START_STREAM, _parser.getEvent());
-        assertFalse(_parser.isInKey());
+        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertTrue(_parser.hasNext());
 
         _parser.next();
         assertEquals(EltnEvent.END_STREAM, _parser.getEvent());
-        assertFalse(_parser.isInKey());
+        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertFalse(_parser.hasNext());
     }    
@@ -87,27 +89,27 @@ public class DefaultEltnPullParserTest {
         push("key = 1");
         
         assertEquals(EltnEvent.START_STREAM, _parser.getEvent());
-        assertFalse(_parser.isInKey());
+        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertTrue(_parser.hasNext());
 
         _parser.next();
-        assertEquals(EltnEvent.TABLE_KEY_NAME, _parser.getEvent());
-        assertTrue(_parser.isInKey());
+        assertEquals(EltnEvent.VAR_NAME, _parser.getEvent());
+        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertEquals("key", _parser.getString());
         assertTrue(_parser.hasNext());
 
         _parser.next();
         assertEquals(EltnEvent.VALUE_NUMBER, _parser.getEvent());
-        assertFalse(_parser.isInKey());
+        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertEquals(1, _parser.getNumber());
         assertTrue(_parser.hasNext());
 
         _parser.next();
         assertEquals(EltnEvent.END_STREAM, _parser.getEvent());
-        assertFalse(_parser.isInKey());
+        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertFalse(_parser.hasNext());
     }    

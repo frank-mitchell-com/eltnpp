@@ -27,69 +27,10 @@ package com.frank_mitchell.eltnpp;
  *
  * @author fmitchell
  */
-public enum EltnEvent {
-    /**
-     * Invalid ELTN syntax.
-     */
-    SYNTAX_ERROR,
-
-    /**
-     * Before first ELTN element
-     */
-    START_STREAM,
-
-    /**
-     * Variable name assignment outside a table (...`=`)
-     */
-    VAR_NAME,
-
-    /**
-     * Start of ELTN array (<code>[</code>)
-     */
-    START_TABLE,
-
-    /**
-     * End of ELTN array (<code>]</code>)
-     */
-    END_TABLE,
+public enum EltnError {
+    ERROR_NONE,
     
-    /**
-     * String key of ELTN object member (...`=` or `[`...`]=`)
-     */
-    TABLE_KEY_STRING,
+    // TODO: other Errors here
     
-    /**
-     * Number key in an ELTN table (`[`...`]=`)
-     */
-    TABLE_KEY_NUMBER,
-
-    /**
-     * Boolean key in an ELTN table (`[`...`]=`)
-     */
-    TABLE_KEY_BOOLEAN,
-
-    /**
-     * ELTN nil (<code>nil</code>)
-     */
-    VALUE_NIL,
-
-    /**
-     * ELTN Boolean
-     */
-    VALUE_BOOLEAN,
-
-    /**
-     * ELTN number
-     */
-    VALUE_NUMBER,
-
-    /**
-     * ELTN string (`"`...`"`)
-     */
-    VALUE_STRING,
-
-    /**
-     * After last ELTN element
-     */
-    END_STREAM    
+    ERROR_UNKNOWN
 }

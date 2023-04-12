@@ -59,48 +59,94 @@ public interface EltnPullParser {
     public EltnEvent getEvent();
 
     /**
+     * Get code for this error.
+     * If {@link getEvent()} is not {@link EltnEvent#SYNTAX_ERROR},
+     * this method will return {@link EltnError#OK}.
+     *
+     * @return the current error code, if any.
+     */
+    public EltnError getError();
+
+    /**
+     * Gets the raw text associated with the current event,
+     * minus any surrounding whitespace.
+     * Every event has associated text, although 
+     * {@link EltnEvent#START_TABLE} will only return "{",
+     * {@link EltnEvent#END_TABLE} will only return "}",
+     * and {@link EltnEvent#START_STREAM} and {@link EltnEvent#END_STREAM}
+     * will only return "".
+     * This can be especially useful on errors.
+     *
+     * @return text associated with this event.
+     */
+    public CharSequence getText();
+
+    /**
+     * Get the current text's offset in the character stream, if available.
+     * This will be a number greater or equal to 0 indicating the number of
+     * characters processed before the beginning of the text shown in 
+     * {@link #getText()}.  Thus the first character is at offset 0.
+     * 
+     * @return an offset &ge; 0, or -1 if not available.
+     * @see #getText() 
+     */
+    public int getTextOffset();
+
+    /**
+     * Get the current text's line number, if available.
+     * This will be a number greater than 0 indicating the number of
+     * newline sequences processed before the text shown in 
+     * {@link #getText()}, plus 1.  Thus the first character is at line 1.
+     * 
+     * @return an offset &gt; 0, or -1 if not available.
+     * @see #getText()
+     * @see #getTextOffset() 
+     */
+    public int getTextLineNumber();
+
+    /**
+     * Get the current text's column number, if available.
+     * This will be a number greater than 0 indicating the number of
+     * characters processed since the last newline sequence, including
+     * the first character of {@link #getText()}, plus 1.
+     * Thus the first character in any line is in column 1.
+     * 
+     * @return an offset &gt; 0, or -1 if not available.
+     * @see #getText()
+     * @see #getTextLineNumber() 
+     */
+    public int getTextColumnNumber();
+
+    /**
      * Indicates if the enclosing value is a ELTN Table.
      * 
      * If this object is currently processing the contents of a ELTN Table,
      * this method will return {@code true}.
      * 
      * @return {@code true} if the enclosing value is a ELTN Table.
-     * 
-     * @see #isInObject() 
      */
     public boolean isInTable();
-    
-    /**
-     * Indicates if the current value is a key in an ELTN table.
-     *
-     * If this object is currently processing the contents of a table key, this
-     * method will return {@code true}.
-     *
-     * @return {@code true} if the enclosing value is a ELTN Table.
-     *
-     * @see #isInObject()
-     */
-    public boolean isInKey();
 
     /**
      * Gets the value associated with the current event.
      * 
-     * On {@link EltnEvent#TABLE_KEY_NAME},
+     * On {@link EltnEvent#TABLE_VAR_NAME},
      * the result is the ELTN string value for the key.
      * 
-     * On {@link EltnEvent#VALUE_STRING},
+     * On {@link EltnEvent#TABLE_KEY_STRING} or {@link EltnEvent#VALUE_STRING},
      * the result is the ELTN string value with all escape sequences 
      * converted to their character values.
      * 
-     * On {@link EltnEvent#VALUE_NUMBER}, the result is the string value
+     * On {@link EltnEvent#TABLE_KEY_NUMBER} or {@link EltnEvent#VALUE_NUMBER}
+     * the result is the string value
      * of the number in its original form (decimal or hexadecimal).
      * 
-     * On {@link EltnEvent#VALUE_TRUE},
-     * {@link EltnEvent#VALUE_FALSE},
-     * or {@link EltnEvent#VALUE_NIL},
-     * the result is "true", "false", or "nil", respectively.
+     * On {@link EltnEvent#TABLE_KEY_BOOLEAN} or {@link EltnEvent#VALUE_BOOLEAN}
+     * the result is "true" or "false".
      * 
-     * Otherwise the method throws an exception
+     * On {@link EltnEvent#VALUE_NIL} the result is "nil".
+     * 
+     * Otherwise the method throws an exception.
      * 
      * @return  the string for the current value 
      * 
@@ -109,9 +155,10 @@ public interface EltnPullParser {
     public String getString();
 
     /**
-     * Gets the {@link BigDecimal} value associated with the current event.
+     * Gets the numeric value associated with the current event.
      * 
-     * If {@link #getEvent()} is {@link EltnEvent#VALUE_NUMBER},
+     * If {@link #getEvent()} is 
+     * {@link EltnEvent#TABLE_KEY_NUMBER} or {@link EltnEvent#VALUE_NUMBER},
      * this method returns an unspecified subclass of Number.
      * Otherwise this method throws an exception. 
      * 
@@ -124,10 +171,9 @@ public interface EltnPullParser {
 
     /**
      * Gets the {@code double} value associated with the current event.
-     * 
-     * If {@link #getEvent()} is {@link EltnEvent#VALUE_NUMBER},
-     * this method returns an unspecified subclass of Number.
-     * Otherwise this method throws an exception. 
+     * If {@link #getEvent()} is not
+     * {@link EltnEvent#TABLE_KEY_NUMBER} or {@link EltnEvent#VALUE_NUMBER},
+     * this method throws an exception. 
      * 
      * @return the value of the current ELTN Number
      * 
@@ -143,10 +189,9 @@ public interface EltnPullParser {
     
     /**
      * Gets the {@code int} value associated with the current event.
-     * 
-     * If {@link #getEvent()} is {@link EltnEvent#VALUE_NUMBER},
-     * this method returns an unspecified subclass of Number.
-     * Otherwise this method throws an exception. 
+     * If {@link #getEvent()} is not
+     * {@link EltnEvent#TABLE_KEY_NUMBER} or {@link EltnEvent#VALUE_NUMBER},
+     * this method throws an exception. 
      * 
      * @return the value of the current ELTN Number
      * 
@@ -159,16 +204,16 @@ public interface EltnPullParser {
         }
         return n.intValue();
     }
+
     /**
      * Gets the {@code long} value associated with the current event.
-     * 
-     * If {@link #getEvent()} is {@link EltnEvent#VALUE_NUMBER},
-     * this method returns an unspecified subclass of Number.
-     * Otherwise this method throws an exception. 
-     * 
+     * If {@link #getEvent()} is not
+     * {@link EltnEvent#TABLE_KEY_NUMBER} or {@link EltnEvent#VALUE_NUMBER},
+     * this method throws an exception. 
+    * 
      * @return the value of the current ELTN Number
      * 
-     * @throws IllegalStateException
+     * @throws IllegalStateException if the current event is not a number.
      */
     default public long getLong() throws IllegalStateException {
         Number n = getNumber();
@@ -181,16 +226,15 @@ public interface EltnPullParser {
     /**
      * Gets a {@code boolean} value for the current event.
      * 
-     * If {@link #getEvent()} is {@link EltnEvent#VALUE_FALSE} or
-     * {@link EltnEvent#VALUE_NIL}, this method returns false.
+     * If {@link #getEvent()} is {@link EltnEvent#VALUE_BOOLEAN} or
+     * {@link EltnEvent#TABLE_KEY_BOOLEAN}, this method returns the value.
+     * If {@link #getEvent()} is {@link EltnEvent#VALUE_NIL}, 
+     * this method returns false.
      * Otherwise this method returns true.
      * This method emulates the convention in Lua that in a Boolean test
      * statement, a value of <em>nil</em> or <em>>false</em> counts as false. 
      * 
      * @return the Boolean value of the current ELTN object
      */
-    default public boolean isTrue() throws IllegalStateException {
-        EltnEvent event = getEvent();
-        return event != EltnEvent.VALUE_NIL && event != EltnEvent.VALUE_FALSE;
-    }
+    public boolean getBoolean();
 }
