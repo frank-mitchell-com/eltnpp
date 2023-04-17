@@ -34,6 +34,12 @@ import java.io.IOException;
  * @author Frank Mitchell
  */
 public class DefaultEltnPullParserFactory implements EltnPullParserFactory {
+    
+    /**
+     * Default constructor.
+     */
+    public DefaultEltnPullParserFactory() {
+    }
 
     @Override
     public EltnPullParser createParser(CodePointSource source) throws IOException {

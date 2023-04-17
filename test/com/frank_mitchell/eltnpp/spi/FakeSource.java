@@ -22,7 +22,6 @@
 package com.frank_mitchell.eltnpp.spi;
 
 import com.frank_mitchell.codepoint.CodePointSource;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 /**
@@ -33,11 +32,18 @@ import java.io.IOException;
  * @author fmitchell
  */
 public class FakeSource implements CodePointSource {
+
+    /**
+     * Assert a true condition.
+     * Provides a compatibility layer with JUnit4 or JUnit5.
+     * @param condition condition to test
+     * @param message   
+     */
+    public static void assertTrue(boolean condition, String message) {
+        // org.junit.jupiter.api.Assertions.assertTrue(condition, message);
+        org.junit.Assert.assertTrue(message, condition);
+    }
     
-    /*
-    The parser likes to read one or two characters ahead, so we'll give
-    it some whitespace until we have real contents.
-    */
     final CharSequence _input;
     boolean _closed = false;
     boolean _nextCalled = false;

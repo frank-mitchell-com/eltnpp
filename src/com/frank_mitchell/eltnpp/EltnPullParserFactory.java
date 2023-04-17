@@ -35,36 +35,52 @@ import java.nio.charset.StandardCharsets;
  * Factory for a {@link EltnPullParser}.
  * Each factory creates an ELTN parser for a stream of ELTN text.
  * Text may be ASCII, UTF-8, UTF-16, or an arbitrary encoding.
- * 
+ *
  * @author Frank Mitchell
  */
 public interface EltnPullParserFactory {
     /**
-     * Creates a stream to parse UTF-16 characters.
-     * In other words, a stream of Java {@literal char}s.
-     * 
-     * @param reader
-     * @return a parser for the reader
-     * @throws IOException 
+     * Creates a parser to process UTF-16 characters.
+     * In other words, a stream of Java {@code char}s.
+     *
+     * @param reader a stream of UTF-16 chars.
+     * @return a parser for the reader.
+     * @throws IOException if the reader throws an exception.
      */
     default EltnPullParser createParser(Reader reader) throws IOException {
         return createParser(CodePoint.getSource(reader, StandardCharsets.UTF_16));
     }
-    
+
     /**
-     * Creates a stream to parse UTF-8 characters.
-     * @param stream
-     * @return
-     * @throws IOException 
+     * Creates a parser to process UTF-8 characters.
+     *
+     * @param stream a stream of UTF-8 bytes.
+     * @return a parser for the stream.
+     * @throws IOException if the stream throws an exception.
      */
     default EltnPullParser createUtf8Parser(InputStream stream) throws IOException {
         return createParser(stream, StandardCharsets.UTF_8);
     }
 
-    default EltnPullParser createParser(InputStream stream, Charset cs) 
+    /**
+     * Creates a parser to process bytes in the specified encoding.
+     *
+     * @param stream a stream of bytes.
+     * @param cs a character encoding.
+     * @return a parser for the stream.
+     * @throws IOException if the stream throws an exception.
+     */
+    default EltnPullParser createParser(InputStream stream, Charset cs)
             throws IOException {
         return createParser(CodePoint.getSource(stream, cs));
     }
-    
+
+    /**
+     * Creates a parser to process a stream of Unicode code points.
+     *
+     * @param source a stream of code points.
+     * @return a parser for the reader.
+     * @throws IOException if the stream throws an exception.
+     */
     EltnPullParser createParser(CodePointSource source) throws IOException;
 }

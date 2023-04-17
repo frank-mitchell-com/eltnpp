@@ -24,13 +24,20 @@
 package com.frank_mitchell.eltnpp;
 
 /**
+ * Codes for common parse errors.
  *
- * @author fmitchell
+ * @author Frank Mitchell
  */
 public enum EltnError {
-    ERROR_NONE,
-    
+    /**
+     * No error condition at present.
+     */
+    NO_ERROR,
+
     // TODO: other Errors here
-    
-    ERROR_UNKNOWN
+
+    /**
+     * Unknown error condition otherwise not enumerated.
+     */
+    UNKNOWN
 }

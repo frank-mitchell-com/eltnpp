@@ -23,32 +23,35 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.frank_mitchell.codepoint.CodePointSource;
 import com.frank_mitchell.eltnpp.EltnError;
 import com.frank_mitchell.eltnpp.EltnEvent;
 import com.frank_mitchell.eltnpp.EltnPullParser;
 import com.frank_mitchell.eltnpp.EltnPullParserFactory;
-import java.io.IOException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 /**
- *
- * @author fmitchell
+ * Tests for a conforming ELTN pull parser.
+ * 
+ * @author Frank Mitchell
  */
-public class DefaultEltnPullParserTest {
+public class EltnPullParserTest {
     
     private EltnPullParserFactory _factory;
     private EltnPullParser _parser;
     private CodePointSource _source;
     private StringBuilder _builder;
 
-    @BeforeEach
+    @Before
     public void setUp() throws IOException {
         _builder = new StringBuilder();
         _source = new FakeSource(_builder);
@@ -56,7 +59,7 @@ public class DefaultEltnPullParserTest {
         _parser = _factory.createParser(_source);
     }
 
-    @AfterEach
+    @After
     public void tearDown() {
         _factory = null;
         _builder = null;
@@ -73,13 +76,13 @@ public class DefaultEltnPullParserTest {
         push(";");
         
         assertEquals(EltnEvent.START_STREAM, _parser.getEvent());
-        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
+        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertTrue(_parser.hasNext());
 
         _parser.next();
         assertEquals(EltnEvent.END_STREAM, _parser.getEvent());
-        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
+        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertFalse(_parser.hasNext());
     }    
@@ -89,27 +92,27 @@ public class DefaultEltnPullParserTest {
         push("key = 1");
         
         assertEquals(EltnEvent.START_STREAM, _parser.getEvent());
-        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
+        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertTrue(_parser.hasNext());
 
         _parser.next();
         assertEquals(EltnEvent.VAR_NAME, _parser.getEvent());
-        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
+        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertEquals("key", _parser.getString());
         assertTrue(_parser.hasNext());
 
         _parser.next();
         assertEquals(EltnEvent.VALUE_NUMBER, _parser.getEvent());
-        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
+        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertEquals(1, _parser.getNumber());
         assertTrue(_parser.hasNext());
 
         _parser.next();
         assertEquals(EltnEvent.END_STREAM, _parser.getEvent());
-        assertEquals(EltnError.ERROR_NONE, _parser.isInTable());
+        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertFalse(_parser.hasNext());
     }    

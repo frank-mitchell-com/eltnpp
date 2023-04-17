@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 fmitchell.
+ * Copyright 2023 Frank Mitchell.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,10 @@
 package com.frank_mitchell.eltnpp;
 
 /**
- *
- * @author fmitchell
+ * Events representing the major semantic elements of an ELTN file. See the 
+ * <a href="https://frank-mitchell.com/projects/eltn/">ELTN Specification</a>.
+ * 
+ * @author Frank Mitchell
  */
 public enum EltnEvent {
     /**
@@ -44,20 +46,20 @@ public enum EltnEvent {
     VAR_NAME,
 
     /**
-     * Start of ELTN array (<code>[</code>)
+     * Start of ELTN array (`[`)
      */
     START_TABLE,
 
     /**
-     * End of ELTN array (<code>]</code>)
+     * End of ELTN array (`]`)
      */
     END_TABLE,
-    
+
     /**
-     * String key of ELTN object member (...`=` or `[`...`]=`)
+     * String key in an ELTN table (...`=` or `[`...`]=`)
      */
     TABLE_KEY_STRING,
-    
+
     /**
      * Number key in an ELTN table (`[`...`]=`)
      */
@@ -69,7 +71,7 @@ public enum EltnEvent {
     TABLE_KEY_BOOLEAN,
 
     /**
-     * ELTN nil (<code>nil</code>)
+     * ELTN nil (`nil`)
      */
     VALUE_NIL,
 
@@ -91,5 +93,5 @@ public enum EltnEvent {
     /**
      * After last ELTN element
      */
-    END_STREAM    
+    END_STREAM
 }

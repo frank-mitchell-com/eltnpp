@@ -37,6 +37,11 @@ import java.io.IOException;
 public class DefaultEltnPullParser implements EltnPullParser {
     private final CodePointSource _source;
 
+    /**
+     * Constructor for an instance.
+     * Should be used only by an [@link EltnPullParserFactory}.
+     * @param source a source of Unicode code points.
+     */
     public DefaultEltnPullParser(CodePointSource source) {
         _source = source;
     }
