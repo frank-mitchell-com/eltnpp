@@ -1,7 +1,4 @@
 bin
 build
 dist
-nbproject/private/
-/nbproject/private/
-.classpath
-.project
+nbproject/private
