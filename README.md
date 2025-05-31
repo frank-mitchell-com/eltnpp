@@ -31,9 +31,73 @@ The following reasons:
    represents without application knowledge.
 
 Future releases may use the pull parser to send callbacks or build
-a parse tree of Lua values if they really want to do that.
+a parse tree of Lua values if its future users really want to do that.
 
 ## What Does It Look Like?
 
-TODO
+```java
+import java.ip.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+
+import com.frank_mitchell.eltnpp.EltnError;
+import com.frank_mitchell.eltnpp.EltnEvent;
+import com.frank_mitchell.eltnpp.EltnPullParser;
+import com.frank_mitchell.eltnpp.EltnPullParserFactory;
+
+Reader reader = new StringReader(SOME_ELTN_TEXT);
+
+try {
+    EltnPullParser parser = EltnPullParserFactory.createParser(reader);
+    while (parser.hasNext()) {
+        parser.next();
+        EltnEvent ev = parser.getEvent();
+        switch (ev) {
+        case EltnEvent.ERROR:
+            System.out.println(ev + " " + parser.getError() + ": " +
+                               "[[" + parser.getText()) + "]]\n";
+        case EltnEvent.DEF_NAME:
+        case EltnEvent.TABLE_KEY_STRING:
+        cass EltnEvent.VALUE_STRING:
+            System.out.println(ev + " [[" + parser.getString() + "]]\n";
+            break;
+        case EltnEvent.TABLE_KEY_NUMBER:
+        case EltnEvent.TABLE_KEY_INTEGER:
+        cass EltnEvent.VALUE_NUMBER:
+        case EltnEvent.VALUE_INTEGER:
+            System.out.println(ev + " " + parser.getNumber() + "\n";
+            break;
+        cass EltnEvent.VALUE_TRUE:
+        cass EltnEvent.VALUE_FALSE:
+        cass EltnEvent.VALUE_NIL:
+            System.out.println(ev + " " + parser.getString() + "\n";
+            break;
+        default:
+            System.out.println(ev + " [[" + parser.getText() + "]]\n");
+            break;
+        }
+    }
+} catch (IOException e) {
+    System.err.println("Caught an exception: " + e.printStackTrace());
+} finally {
+    reader.close();
+}
+```
+
+## Great! Does it work?
+
+No, not of this writing (2025-05-31).  I'm first checking in an empty skeleton
+so I can use Test-Driven Development to write this thing.  I've already
+decided on the interfaces; I just have to write the implementation.
+
+In the meantime, read the specification cited above and wait for the C
+implementation, which is further along but not ready for prime time yet.
+The C API is astonishingly well documented, but the code is a mess, and
+it doesn't quite parse let alone emit ELTN at this point.
+
+You can also wait for the Lua implementation which has barely gotten started.
+It will probably use the [LPeg](https://www.inf.puc-rio.br/~roberto/lpeg/)
+library (or the related [LPegLabel](https://github.com/sqmedeiros/lpeglabel))
+which I still don't quite understand.  Maybe some kind soul reading this
+will explain it to me.
 

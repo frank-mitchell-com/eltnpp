@@ -60,8 +60,8 @@ public interface EltnPullParser {
 
     /**
      * Get code for this error.
-     * If {@link getEvent()} is not {@link EltnEvent#SYNTAX_ERROR},
-     * this method will return {@link EltnError#NO_ERROR}.
+     * If {@link getEvent()} is not {@link EltnEvent#ERROR},
+     * this method will return {@link EltnError#OK}.
      *
      * @return the current error code, if any.
      */
@@ -71,9 +71,9 @@ public interface EltnPullParser {
      * Gets the raw text associated with the current event,
      * minus any surrounding whitespace.
      * Every event has associated text, although
-     * {@link EltnEvent#START_TABLE} will only return "{",
-     * {@link EltnEvent#END_TABLE} will only return "}",
-     * and {@link EltnEvent#START_STREAM} and {@link EltnEvent#END_STREAM}
+     * {@link EltnEvent#TABLE_START} will only return "{",
+     * {@link EltnEvent#TABLE_END} will only return "}",
+     * and {@link EltnEvent#STREAM_START} and {@link EltnEvent#STREAM_END}
      * will only return "".
      * This can be especially useful on errors.
      *
@@ -130,21 +130,20 @@ public interface EltnPullParser {
     /**
      * Gets the value associated with the current event.
      *
-     * On {@link EltnEvent#VAR_NAME},
+     * On {@link EltnEvent#DEF_NAME},
      * the result is the ELTN string value for the key.
      *
      * On {@link EltnEvent#TABLE_KEY_STRING} or {@link EltnEvent#VALUE_STRING},
      * the result is the ELTN string value with all escape sequences
      * converted to their character values.
      *
-     * On {@link EltnEvent#TABLE_KEY_NUMBER} or {@link EltnEvent#VALUE_NUMBER}
+     * On {@link EltnEvent#TABLE_KEY_NUMBER}, {@link EltnEvent#VALUE_NUMBER}
+     * {@link EltnEvent#TABLE_KEY_INTEGER}, or {@link EltnEvent#VALUE_INTEGER}
      * the result is the string value
      * of the number in its original form (decimal or hexadecimal).
      *
-     * On {@link EltnEvent#TABLE_KEY_BOOLEAN} or {@link EltnEvent#VALUE_BOOLEAN}
-     * the result is "true" or "false".
-     *
-     * On {@link EltnEvent#VALUE_NIL} the result is "nil".
+     * On {@link EltnEvent#VALUE_TRUE}, {@link EltnEvent#VALUE_FALSE},
+     * or {@link EltnEvent#VALUE_NIL} the result is "true", "false", pr "nil".
      *
      * Otherwise the method throws an exception.
      *
@@ -158,6 +157,7 @@ public interface EltnPullParser {
      * Gets the numeric value associated with the current event.
      *
      * If {@link #getEvent()} is
+     * {@link EltnEvent#TABLE_KEY_INTEGER}, {@link EltnEvent#VALUE_INTEGER},
      * {@link EltnEvent#TABLE_KEY_NUMBER} or {@link EltnEvent#VALUE_NUMBER},
      * this method returns an unspecified subclass of Number.
      * Otherwise this method throws an exception.
@@ -171,8 +171,8 @@ public interface EltnPullParser {
     /**
      * Gets a {@code boolean} value for the current event.
      *
-     * If {@link #getEvent()} is {@link EltnEvent#VALUE_BOOLEAN} or
-     * {@link EltnEvent#TABLE_KEY_BOOLEAN}, this method returns the value.
+     * If {@link #getEvent()} is {@link EltnEvent#VALUE_TRUE} or
+     * {@link EltnEvent#VALUE_FALSE}, this method returns the value.
      * If {@link #getEvent()} is {@link EltnEvent#VALUE_NIL},
      * this method returns false.
      * Otherwise this method returns true.

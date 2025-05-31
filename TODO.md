@@ -1,5 +1,3 @@
-- Make build.xml work
-
 - Make the ELTN Pull Parser work:
   - parse atoms (string, number, true, false, nil)
   - parse complex strings

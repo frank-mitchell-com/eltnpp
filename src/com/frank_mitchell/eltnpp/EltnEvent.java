@@ -33,27 +33,27 @@ public enum EltnEvent {
     /**
      * Invalid ELTN syntax.
      */
-    SYNTAX_ERROR,
+    ERROR,
 
     /**
      * Before first ELTN element
      */
-    START_STREAM,
+    STREAM_START,
 
     /**
-     * Variable name assignment outside a table (...`=`)
+     * Definition name assignment outside a table (...`=`)
      */
-    VAR_NAME,
+    DEF_NAME,
 
     /**
      * Start of ELTN array (`[`)
      */
-    START_TABLE,
+    TABLE_START,
 
     /**
      * End of ELTN array (`]`)
      */
-    END_TABLE,
+    TABLE_END,
 
     /**
      * String key in an ELTN table (...`=` or `[`...`]=`)
@@ -66,9 +66,9 @@ public enum EltnEvent {
     TABLE_KEY_NUMBER,
 
     /**
-     * Boolean key in an ELTN table (`[`...`]=`)
+     * Integer key in an ELTN table (`[`...`]=`)
      */
-    TABLE_KEY_BOOLEAN,
+    TABLE_KEY_INTEGER,
 
     /**
      * ELTN nil (`nil`)
@@ -76,9 +76,19 @@ public enum EltnEvent {
     VALUE_NIL,
 
     /**
-     * ELTN Boolean
+     * ELTN Boolean `false`
      */
-    VALUE_BOOLEAN,
+    VALUE_FALSE,
+
+    /**
+     * ELTN Boolean `true`
+     */
+    VALUE_TRUE,
+
+    /**
+     * ELTN integer
+     */
+    VALUE_INTEGER,
 
     /**
      * ELTN number
@@ -93,5 +103,5 @@ public enum EltnEvent {
     /**
      * After last ELTN element
      */
-    END_STREAM
+    STREAM_END
 }

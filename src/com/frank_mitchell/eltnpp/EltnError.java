@@ -32,7 +32,34 @@ public enum EltnError {
     /**
      * No error condition at present.
      */
-    NO_ERROR,
+    OK,
+
+    /**
+     * The parser caught an {@link OutOfMemoryError}.
+     */
+    OUT_OF_MEMORY,
+
+    /**
+     * Unexpected end of stream.
+     */
+    STREAM_END,
+
+    /**
+     * A valid ELTN construct in the wrong place.
+     */
+    UNEXPECTED_TOKEN,
+
+    /**
+     * An invalid character or reserved word.
+     */
+    INVALID_TOKEN,
+
+    /**
+     * A key repeated in the same table, explicitly or implicitly.
+     * The latter can happen when the implicit index of an entry without
+     * a key duplicates an explicit key,or vice versa.
+     */
+    DUPLICATE_KEY,
 
     // TODO: other Errors here
 

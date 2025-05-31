@@ -72,17 +72,17 @@ public class EltnPullParserTest {
     }
 
     @Test
-    public void testParseSemicolon() throws IOException {
-        push(";");
+    public void testParseEmpty() throws IOException {
+        push("");
         
-        assertEquals(EltnEvent.START_STREAM, _parser.getEvent());
-        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
+        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
+        assertEquals(EltnError.OK, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertTrue(_parser.hasNext());
 
         _parser.next();
-        assertEquals(EltnEvent.END_STREAM, _parser.getEvent());
-        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
+        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
+        assertEquals(EltnError.OK, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertFalse(_parser.hasNext());
     }    
@@ -91,28 +91,28 @@ public class EltnPullParserTest {
     public void testParseKeyValue() throws IOException {
         push("key = 1");
         
-        assertEquals(EltnEvent.START_STREAM, _parser.getEvent());
-        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
+        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
+        assertEquals(EltnError.OK, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertTrue(_parser.hasNext());
 
         _parser.next();
-        assertEquals(EltnEvent.VAR_NAME, _parser.getEvent());
-        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
+        assertEquals(EltnEvent.DEF_NAME, _parser.getEvent());
+        assertEquals(EltnError.OK, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertEquals("key", _parser.getString());
         assertTrue(_parser.hasNext());
 
         _parser.next();
         assertEquals(EltnEvent.VALUE_NUMBER, _parser.getEvent());
-        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
+        assertEquals(EltnError.OK, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertEquals(1, _parser.getNumber());
         assertTrue(_parser.hasNext());
 
         _parser.next();
-        assertEquals(EltnEvent.END_STREAM, _parser.getEvent());
-        assertEquals(EltnError.NO_ERROR, _parser.isInTable());
+        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
+        assertEquals(EltnError.OK, _parser.isInTable());
         assertFalse(_parser.isInTable());
         assertFalse(_parser.hasNext());
     }    
