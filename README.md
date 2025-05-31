@@ -3,7 +3,7 @@ README
 
 This is an implementation of
 a [pull parser](https://en.wikipedia.org/wiki/XML#Pull_parsing)
-for [ELTN](http://frank-mitchell/projects/eltn/), the author's
+for [ELTN](http://frank-mitchell.com/projects/eltn/), the author's
 "Extended [Lua](https://lua.org) Table Notation".
 
 For an example of one of my previous pull parsers, see
