@@ -1,4 +1,7 @@
-This is an implementation of 
+README
+======
+
+This is an implementation of
 a [pull parser](https://en.wikipedia.org/wiki/XML#Pull_parsing)
 for [ELTN](http://frank-mitchell/projects/eltn/), the author's
 "Extended [Lua](https://lua.org) Table Notation".
@@ -6,13 +9,14 @@ for [ELTN](http://frank-mitchell/projects/eltn/), the author's
 For an example of one of my previous pull parsers, see
 [JSONPP](https://github.com/frank-mitchell-com/jsonpp).
 
-## Why a Pull Parser?
+Why a Pull Parser?
+------------------
 
 The following reasons:
 
 1. While regular parsers require a programmer to register callbacks[^if]
    or walk a parse tree, a pull parser keeps the programmer in charge.
-   With each invocation the pull parser presents the programmer with 
+   With each invocation the pull parser presents the programmer with
    the next Lua elements it's found. The programmer can then decide
    how to process each event, pass the parser elsewhere in the program,
    or even abort parsing entirely because the input fails
@@ -33,7 +37,8 @@ The following reasons:
 Future releases may use the pull parser to send callbacks or build
 a parse tree of Lua values if its future users really want to do that.
 
-## What Does It Look Like?
+What Does It Look Like?
+-----------------------
 
 ```java
 import java.ip.IOException;
@@ -55,22 +60,23 @@ try {
         switch (ev) {
         case EltnEvent.ERROR:
             System.out.println(ev + " " + parser.getError() + ": " +
-                               "[[" + parser.getText()) + "]]\n";
+                               "[[" + parser.getText() + "]]\n");
+            break;
         case EltnEvent.DEF_NAME:
         case EltnEvent.TABLE_KEY_STRING:
         cass EltnEvent.VALUE_STRING:
-            System.out.println(ev + " [[" + parser.getString() + "]]\n";
+            System.out.println(ev + " [[" + parser.getString() + "]]\n");
             break;
         case EltnEvent.TABLE_KEY_NUMBER:
         case EltnEvent.TABLE_KEY_INTEGER:
         cass EltnEvent.VALUE_NUMBER:
         case EltnEvent.VALUE_INTEGER:
-            System.out.println(ev + " " + parser.getNumber() + "\n";
+            System.out.println(ev + " " + parser.getNumber() + "\n");
             break;
         cass EltnEvent.VALUE_TRUE:
         cass EltnEvent.VALUE_FALSE:
         cass EltnEvent.VALUE_NIL:
-            System.out.println(ev + " " + parser.getString() + "\n";
+            System.out.println(ev + " " + parser.getString() + "\n");
             break;
         default:
             System.out.println(ev + " [[" + parser.getText() + "]]\n");
@@ -84,7 +90,8 @@ try {
 }
 ```
 
-## Great! Does it work?
+Great! Does It Work?
+--------------------
 
 No, not of this writing (2025-05-31).  I'm first checking in an empty skeleton
 so I can use Test-Driven Development to write this thing.  I've already
@@ -100,4 +107,3 @@ It will probably use the [LPeg](https://www.inf.puc-rio.br/~roberto/lpeg/)
 library (or the related [LPegLabel](https://github.com/sqmedeiros/lpeglabel))
 which I still don't quite understand.  Maybe some kind soul reading this
 will explain it to me.
-
