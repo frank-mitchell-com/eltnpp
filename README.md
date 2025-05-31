@@ -64,18 +64,18 @@ try {
             break;
         case EltnEvent.DEF_NAME:
         case EltnEvent.TABLE_KEY_STRING:
-        cass EltnEvent.VALUE_STRING:
+        case EltnEvent.VALUE_STRING:
             System.out.println(ev + " [[" + parser.getString() + "]]\n");
             break;
         case EltnEvent.TABLE_KEY_NUMBER:
         case EltnEvent.TABLE_KEY_INTEGER:
-        cass EltnEvent.VALUE_NUMBER:
+        case EltnEvent.VALUE_NUMBER:
         case EltnEvent.VALUE_INTEGER:
             System.out.println(ev + " " + parser.getNumber() + "\n");
             break;
-        cass EltnEvent.VALUE_TRUE:
-        cass EltnEvent.VALUE_FALSE:
-        cass EltnEvent.VALUE_NIL:
+        case EltnEvent.VALUE_TRUE:
+        case EltnEvent.VALUE_FALSE:
+        case EltnEvent.VALUE_NIL:
             System.out.println(ev + " " + parser.getString() + "\n");
             break;
         default:
