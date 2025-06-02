@@ -27,8 +27,8 @@ import java.io.IOException;
 
 /**
  * A pull parser for an ELTN (Extended Lua Table Notation) document.
- * 
- * See the 
+ *
+ * See the
  * <a href="https://frank-mitchell.com/projects/eltn/">ELTN Specification</a>
  * for more information.
  *
@@ -147,7 +147,7 @@ public interface EltnPullParser {
      *
      * Otherwise the method throws an exception.
      *
-     * @return  the string for the current value
+     * @return the string for the current value
      *
      * @throws IllegalStateException if the current event has no string value.
      */
@@ -181,5 +181,62 @@ public interface EltnPullParser {
      *
      * @return the Boolean value of the current ELTN object
      */
-    public boolean getBoolean();
+    default public boolean getBoolean() {
+        switch (getEvent()) {
+        case VALUE_FALSE:
+        case VALUE_NIL:
+            return false;
+        default:
+            return true;
+        }
+    }
+
+    /**
+     * Indicates the depth of nested tables at the current point in the ELTN
+     * document. The Definition Table is at depth 0.
+     *
+     * @return the depth of nested tables.
+     */
+    public int getDepth();
+
+    /**
+     * Gets the key or definition at the current point in the ELTN document.
+     * On {@link EltnEvent#DEF_NAME}, {@link EltnEvent#TABLE_KEY_INTEGER},
+     * {@link EltnEvent#TABLE_KEY_NUMBER}, or
+     * {@link EltnEvent#TABLE_KEY_STRING} this is the current key text.
+     * On {@link EltnEvent#TABLE_START}, {@link EltnEvent#VALUE_FALSE},
+     * {@link EltnEvent#VALUE_INTEGER}, {@link EltnEvent#VALUE_NIL},
+     * {@link EltnEvent#VALUE_NUMBER}, [@link EltnEvent#VALUE_STRING}, or
+     * {@link EltnEvent#VALUE_TRUE}, this is the most recently seen key, or
+     * the implied key if not preceded by a key or definition name. On
+     * {@link EltnEvent#TABLE_END}, this is the key to which the closed
+     * table belongs. On other events it is undefined.
+     *
+     * @return the key or definition name currently being set.
+     */
+    public CharSequence getCurrentKeyText();
+
+    /**
+     * The event type that created {@link #getCurrentKeyText()}. It will be
+     * one of {@link EltnEvent#DEF_NAME},
+     * {@link EltnEvent#TABLE_KEY_INTEGER}
+     * {@link EltnEvent#TABLE_KEY_NUMBER}, or
+     * {@link EltnEvent#TABLE_KEY_STRING}.
+     *
+     * @return the type of the current key.
+     * @see #getCurrentKeyText()
+     */
+    public EltnEvent getCurrentKeyType();
+
+    /**
+     * The concatenation of keys or definition names from the top level
+     * to the current point in the document. Each element that is an
+     * identifier save the first will be preceded by a dot.  Each other
+     * element will be enclosed in square brackets and, if a string,
+     * single or double quotes, with escape characters marking unprintable
+     * characters.
+     *
+     * @return the path of all current keys.
+     */
+    public CharSequence getCurrentPath();
 }
