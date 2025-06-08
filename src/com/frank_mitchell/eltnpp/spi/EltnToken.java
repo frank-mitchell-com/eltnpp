@@ -23,12 +23,14 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
+import java.util.Objects;
+
 /**
  *
  * @author Frank Mitchell <me@frank-mitchell.com>
  */
 final class EltnToken {
-    
+
     final EltnTokenType type;
     final String text;
     final int offset;
@@ -42,5 +44,48 @@ final class EltnToken {
         this.line = line;
         this.column = col;
     }
-    
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 23 * hash + Objects.hashCode(this.type);
+        hash = 23 * hash + Objects.hashCode(this.text);
+        hash = 23 * hash + this.offset;
+        hash = 23 * hash + this.line;
+        hash = 23 * hash + this.column;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EltnToken other = (EltnToken) obj;
+        if (this.offset != other.offset) {
+            return false;
+        }
+        if (this.line != other.line) {
+            return false;
+        }
+        if (this.column != other.column) {
+            return false;
+        }
+        if (!Objects.equals(this.text, other.text)) {
+            return false;
+        }
+        return this.type == other.type;
+    }
+
+    @Override
+    public String toString() {
+        return "EltnToken{" + "type=" + type + ", text=" + text + ", offset=" + offset + ", line=" + line + ", column=" + column + '}';
+    }
+
 }

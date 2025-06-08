@@ -116,4 +116,64 @@ public class EltnPullParserTest {
         assertFalse(_parser.isInTable());
         assertFalse(_parser.hasNext());
     }    
+    
+    @Test
+    public void testParseKeyValueBoolean() throws IOException {
+        push("key = true");
+        
+        assertEquals(EltnError.OK, _parser.getError());
+        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
+        assertFalse(_parser.isInTable());
+        assertTrue(_parser.hasNext());
+
+        _parser.next();
+        assertEquals(EltnError.OK, _parser.getError());
+        assertEquals(EltnEvent.DEF_NAME, _parser.getEvent());
+        assertFalse(_parser.isInTable());
+        assertEquals("key", _parser.getString());
+        assertTrue(_parser.hasNext());
+
+        _parser.next();
+        assertEquals(EltnError.OK, _parser.getError());
+        assertEquals(EltnEvent.VALUE_TRUE, _parser.getEvent());
+        assertFalse(_parser.isInTable());
+        assertEquals(true, _parser.getBoolean());
+        assertTrue(_parser.hasNext());
+
+        _parser.next();
+        assertEquals(EltnError.OK, _parser.getError());
+        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
+        assertFalse(_parser.isInTable());
+        assertFalse(_parser.hasNext());
+    } 
+
+    @Test
+    public void testParseKeyValueString() throws IOException {
+        push("key = \"a quoted sring\"");
+        
+        assertEquals(EltnError.OK, _parser.getError());
+        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
+        assertFalse(_parser.isInTable());
+        assertTrue(_parser.hasNext());
+
+        _parser.next();
+        assertEquals(EltnError.OK, _parser.getError());
+        assertEquals(EltnEvent.DEF_NAME, _parser.getEvent());
+        assertFalse(_parser.isInTable());
+        assertEquals("key", _parser.getString());
+        assertTrue(_parser.hasNext());
+
+        _parser.next();
+        assertEquals(EltnError.OK, _parser.getError());
+        assertEquals(EltnEvent.VALUE_TRUE, _parser.getEvent());
+        assertFalse(_parser.isInTable());
+        assertEquals("a quoted string", _parser.getString());
+        assertTrue(_parser.hasNext());
+
+        _parser.next();
+        assertEquals(EltnError.OK, _parser.getError());
+        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
+        assertFalse(_parser.isInTable());
+        assertFalse(_parser.hasNext());
+    }
 }
