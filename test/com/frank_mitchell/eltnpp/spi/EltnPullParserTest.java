@@ -149,7 +149,7 @@ public class EltnPullParserTest {
 
     @Test
     public void testParseKeyValueString() throws IOException {
-        push("key = \"a quoted sring\"");
+        push("key = \"a quoted string\"");
         
         assertEquals(EltnError.OK, _parser.getError());
         assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
@@ -165,7 +165,7 @@ public class EltnPullParserTest {
 
         _parser.next();
         assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.VALUE_TRUE, _parser.getEvent());
+        assertEquals(EltnEvent.VALUE_STRING, _parser.getEvent());
         assertFalse(_parser.isInTable());
         assertEquals("a quoted string", _parser.getString());
         assertTrue(_parser.hasNext());

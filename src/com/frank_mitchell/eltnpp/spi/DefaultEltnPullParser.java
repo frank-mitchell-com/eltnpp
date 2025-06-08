@@ -28,6 +28,8 @@ import com.frank_mitchell.eltnpp.EltnError;
 import com.frank_mitchell.eltnpp.EltnEvent;
 import com.frank_mitchell.eltnpp.EltnPullParser;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Default implementation for {@link EltnPullParser}
@@ -111,8 +113,127 @@ final class DefaultEltnPullParser implements EltnPullParser {
 
 	@Override
 	public String getString() {
-        // TODO: ckean up based ont _currentToken.type:w
-		return getTextString();
+		// TODO: cache results for subsequent invocations
+		switch(_currToken.type) {
+		case TOKEN_QUOTED_STRING:
+			return unescapeQuotedString(getTextString());
+		case TOKEN_LONG_STRING:
+			return unquoteLongString(getTextString());
+		case TOKEN_COMMENT:
+			return trimComment(getTextString());
+		case TOKEN_LONG_COMMENT:
+			return trimLongComment(getTextString());
+		default:
+			return getTextString();
+		}
+	}
+
+	static String unquoteLongString(CharSequence cs) {
+		return cs.toString();
+	}
+
+	static String trimComment(CharSequence cs) {
+		return cs.toString();
+	}
+
+	static String trimLongComment(CharSequence cs) {
+		return unquoteLongString(cs.subSequence(2, -1)).toString();
+	}
+
+	static String unescapeQuotedString(CharSequence cs) {
+		StringBuffer result = new StringBuffer(cs.length());
+		int i = 1; 
+		while (i < cs.length() - 1) {
+			char c = cs.charAt(i);
+			if (c != '\\') {
+				result.append(c);
+				i++;
+				continue;
+			}
+			c = cs.charAt(i);
+			switch(c) {
+				case 'a':
+					result.append((char)0x07);
+					break;
+				case 'b':
+					result.append('\b');
+					break;
+				case 'f':
+					result.append('\f');
+					i++;
+					break;
+				case 'n':
+					result.append('\n');
+					i++;
+					break;
+				case 't':
+					result.append('\t');
+					i++;
+					break;
+				case 'r':
+					result.append('\r');
+					i++;
+					break;
+				case 'v':
+					result.append((char)0x0b);
+					i++;
+					break;
+				case 'u':
+					try {
+						final Pattern unipattern = Pattern.compile("u{(\\p{XDigit}+)}");
+						Matcher match = unipattern.matcher(cs.subSequence(i, cs.length()-i));
+						String hexdigits = match.group(1);
+						int hexvalue = Integer.parseUnsignedInt(hexdigits, 16);
+						result.appendCodePoint(hexvalue);
+						i += hexdigits.length()+3;
+					} catch (NumberFormatException e) {
+						// Invalid hexdigits, so just leave them alone.
+					}
+				case 'x':
+					try {
+						String hexdigits = cs.subSequence(i, i+2).toString();
+						int hexvalue = Integer.parseUnsignedInt(hexdigits, 16);
+						result.append((char)hexvalue);
+						i+=2;
+					} catch (NumberFormatException e) {
+						// Invalid hexdigits, so just leave them alone.
+					}
+					break;
+				case 'z':
+					i++;
+					c = cs.charAt(i);
+					while (DefaultEltnLexer.isEltnSpace(c) && i < cs.length() - 1) {
+						i++;
+						c = cs.charAt(i);
+					}
+					result.append(c);
+					break;
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+					try {
+						final Pattern octpattern = Pattern.compile("([0-7]{1,3})");
+						Matcher match = octpattern.matcher(cs.subSequence(i, cs.length()-i));
+						String octdigits = match.group(1);
+						int value = Integer.parseUnsignedInt(octdigits, 8);
+						result.appendCodePoint(value);
+						i += octdigits.length();
+					} catch (NumberFormatException e) {
+						// Invalid hexdigits, so just leave them alone.
+					}
+					break;
+				default:
+					result.append(c);
+					i++;
+					break;
+			}
+		}
+		return result.toString();
 	}
 
 	@Override

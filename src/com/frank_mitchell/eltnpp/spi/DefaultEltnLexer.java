@@ -98,7 +98,7 @@ class DefaultEltnLexer {
         }
     }
 
-    private static boolean isEltnSpace(int cp) {
+    static boolean isEltnSpace(int cp) {
         return Character.isWhitespace(cp);
     }
 
@@ -170,41 +170,24 @@ class DefaultEltnLexer {
             case '8':
             case '9':
             case '.':
-                /* TODO: parse number */
-                currentChar = getNextCodePoint();
-                while (isEltnNumberPart(currentChar)) {
-                    tokenbuf.appendCodePoint(currentChar);
-                    currentChar = getNextCodePoint();
-                }
-                if (currentChar >= 0) {
-                    _pushback = true;
-                }
-                try {
-                    /* Cruder than a regular expression, but easier */
-                    Double d = Double.valueOf(tokenbuf.toString());
-                    if (!d.isInfinite() && !d.isNaN()) {
-                        type = EltnTokenType.TOKEN_NUMBER;
-                    } else {
-                        type = EltnTokenType.TOKEN_INVALID;
-                    }
-                } catch (NumberFormatException e) {
-                    type = EltnTokenType.TOKEN_INVALID;
-                }
+                /* parse number */
+                type = parseEltnNumber(tokenbuf);
                 break;
             case '-':
-                /* TODO: number or comment */
+                /* number or comment */
                 currentChar = getNextCodePoint();
                 if (currentChar == '-') {
                     tokenbuf.appendCodePoint(currentChar);
                     /* TODO: parse comment */
                 } else if (isEltnDigit(currentChar) || currentChar == '.') {
                     _pushback = true;
-                    /* TODO: parse negative number */
+                    /* parse negative number */
+                    type = parseEltnNumber(tokenbuf);
                 }
                 break;
             case '"':
             case '\'':
-                /* TODO: parse quoted string */
+                type = readQuotedString(tokenbuf, currentChar);
                 break;
             default:
                 if (isEltnNameStart(currentChar)) {
@@ -219,7 +202,6 @@ class DefaultEltnLexer {
                     }
 
                     String identifier = tokenbuf.toString();
-                    /* TODO: check if a reserved word */
                     switch (identifier) {
                         case "false":
                             type = EltnTokenType.TOKEN_FALSE;
@@ -242,6 +224,47 @@ class DefaultEltnLexer {
                 break;
         }
         return new EltnToken(type, tokenbuf, offset, line, col);
+    }
+
+    private EltnTokenType readQuotedString(StringBuilder tokenbuf, int currentChar) throws IOException {
+        EltnTokenType type;
+        int quoteChar = currentChar;
+        int prevChar = currentChar;
+        currentChar = getNextCodePoint();
+        while (currentChar != quoteChar || prevChar =='\\') {
+            /* TODO: Stop at unescaped newline */
+            tokenbuf.appendCodePoint(currentChar);
+            prevChar = currentChar;
+            currentChar = getNextCodePoint();
+        }
+        tokenbuf.appendCodePoint(currentChar);
+        type = EltnTokenType.TOKEN_QUOTED_STRING;
+        return type;
+    }
+
+    private EltnTokenType parseEltnNumber(StringBuilder tokenbuf) throws IOException {
+        EltnTokenType type;
+        int currentChar;
+        currentChar = getNextCodePoint();
+        while (isEltnNumberPart(currentChar)) {
+            tokenbuf.appendCodePoint(currentChar);
+            currentChar = getNextCodePoint();
+        }
+        if (currentChar >= 0) {
+            _pushback = true;
+        }
+        try {
+            /* Cruder than a regular expression, but easier */
+            Double d = Double.valueOf(tokenbuf.toString());
+            if (!d.isInfinite() && !d.isNaN()) {
+                type = EltnTokenType.TOKEN_NUMBER;
+            } else {
+                type = EltnTokenType.TOKEN_INVALID;
+            }
+        } catch (NumberFormatException e) {
+            type = EltnTokenType.TOKEN_INVALID;
+        }
+        return type;
     }
 
     private int getNextCodePoint() throws IOException {
