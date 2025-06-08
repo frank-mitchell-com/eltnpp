@@ -48,12 +48,13 @@ import java.io.StringReader;
 import com.frank_mitchell.eltnpp.EltnError;
 import com.frank_mitchell.eltnpp.EltnEvent;
 import com.frank_mitchell.eltnpp.EltnPullParser;
-import com.frank_mitchell.eltnpp.EltnPullParserFactory;
+import com.frank_mitchell.eltnpp.EltnService;
 
 Reader reader = new StringReader(SOME_ELTN_TEXT);
 
 try {
-    EltnPullParser parser = EltnPullParserFactory.createParser(reader);
+    EltnPullParser parser = EltnService.createPullParser(reader);
+
     while (parser.hasNext()) {
         parser.next();
         EltnEvent ev = parser.getEvent();

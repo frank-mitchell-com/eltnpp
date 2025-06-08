@@ -160,13 +160,14 @@ public interface EltnPullParser {
      * {@link EltnEvent#TABLE_KEY_INTEGER}, {@link EltnEvent#VALUE_INTEGER},
      * {@link EltnEvent#TABLE_KEY_NUMBER} or {@link EltnEvent#VALUE_NUMBER},
      * this method returns an unspecified subclass of Number.
-     * Otherwise this method throws an exception.
+     * If the current text does not represent a number,
+     * this method throws an exception.
      *
      * @return the value of the current ELTN Number
      *
-     * @throws IllegalStateException if the current event is not a number.
+     * @throws java.lang.NumberFormatException if the current text is not a number.
      */
-    public Number getNumber();
+    public Number getNumber() throws NumberFormatException;
 
     /**
      * Gets a {@code boolean} value for the current event.

@@ -1,6 +1,12 @@
 TODO
 ====
 
+API
+---
+
+- Use `java.util.ServiceLoader` to load the default factory.
+
+
 Implementation
 --------------
 
@@ -36,3 +42,4 @@ Release
 - Implement package protection of Java 11.
 - Incude Codepoint in jar?
 - Doublecheck JavaDoc.
+- 

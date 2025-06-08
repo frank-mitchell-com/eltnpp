@@ -41,6 +41,11 @@ public enum EltnEvent {
     STREAM_START,
 
     /**
+     * Comment (`--`...)
+     */
+    COMMENT,
+
+    /**
      * Definition name assignment outside a table (...`=`)
      */
     DEF_NAME,
