@@ -189,6 +189,7 @@ final class DefaultEltnPullParser implements EltnPullParser {
 					} catch (NumberFormatException e) {
 						// Invalid hexdigits, so just leave them alone.
 					}
+					break;
 				case 'x':
 					try {
 						String hexdigits = cs.subSequence(i, i+2).toString();
