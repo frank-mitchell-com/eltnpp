@@ -150,13 +150,16 @@ final class DefaultEltnPullParser implements EltnPullParser {
 				i++;
 				continue;
 			}
+            i++;
 			c = cs.charAt(i);
 			switch(c) {
 				case 'a':
 					result.append((char)0x07);
+					i++;
 					break;
 				case 'b':
 					result.append('\b');
+                    i++;
 					break;
 				case 'f':
 					result.append('\f');
@@ -181,7 +184,7 @@ final class DefaultEltnPullParser implements EltnPullParser {
 				case 'u':
 					try {
 						final Pattern unipattern = Pattern.compile("u{(\\p{XDigit}+)}");
-						Matcher match = unipattern.matcher(cs.subSequence(i, cs.length()-i));
+						Matcher match = unipattern.matcher(cs.subSequence(i, cs.length()));
 						String hexdigits = match.group(1);
 						int hexvalue = Integer.parseUnsignedInt(hexdigits, 16);
 						result.appendCodePoint(hexvalue);
@@ -208,6 +211,7 @@ final class DefaultEltnPullParser implements EltnPullParser {
 						c = cs.charAt(i);
 					}
 					result.append(c);
+                    i++;
 					break;
 				case '0':
 				case '1':
@@ -219,7 +223,7 @@ final class DefaultEltnPullParser implements EltnPullParser {
 				case '7':
 					try {
 						final Pattern octpattern = Pattern.compile("([0-7]{1,3})");
-						Matcher match = octpattern.matcher(cs.subSequence(i, cs.length()-i));
+						Matcher match = octpattern.matcher(cs.subSequence(i, cs.length()));
 						String octdigits = match.group(1);
 						int value = Integer.parseUnsignedInt(octdigits, 8);
 						result.appendCodePoint(value);

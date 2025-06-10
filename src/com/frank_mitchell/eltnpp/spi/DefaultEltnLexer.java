@@ -231,13 +231,16 @@ class DefaultEltnLexer {
         int quoteChar = currentChar;
         int prevChar = currentChar;
         currentChar = getNextCodePoint();
-        while (currentChar != quoteChar || prevChar =='\\') {
+        while (currentChar >= 0 && currentChar <= 0x10FFFF
+                && (currentChar != quoteChar || prevChar =='\\')) {
             /* TODO: Stop at unescaped newline */
             tokenbuf.appendCodePoint(currentChar);
             prevChar = currentChar;
             currentChar = getNextCodePoint();
         }
-        tokenbuf.appendCodePoint(currentChar);
+        if (currentChar >= 0 && currentChar <= 0x10FFFF) {
+            tokenbuf.appendCodePoint(currentChar);
+        }
         type = EltnTokenType.TOKEN_QUOTED_STRING;
         return type;
     }
