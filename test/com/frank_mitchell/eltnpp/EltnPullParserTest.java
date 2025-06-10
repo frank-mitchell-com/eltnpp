@@ -29,15 +29,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import com.frank_mitchell.codepoint.CodePointSource;
 import com.frank_mitchell.eltnpp.EltnError;
 import com.frank_mitchell.eltnpp.EltnEvent;
 import com.frank_mitchell.eltnpp.EltnPullParser;
-import com.frank_mitchell.eltnpp.EltnPullParserFactory;
+import com.frank_mitchell.eltnpp.EltnService;
+import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * Tests for a conforming ELTN pull parser.
@@ -46,34 +45,19 @@ import com.frank_mitchell.eltnpp.EltnPullParserFactory;
  */
 public class EltnPullParserTest {
     
-    private EltnPullParserFactory _factory;
     private EltnPullParser _parser;
-    private CodePointSource _source;
-    private StringBuilder _builder;
 
-    @Before
-    public void setUp() throws IOException {
-        _builder = new StringBuilder();
-        _source = new FakeSource(_builder);
-        _factory = new DefaultEltnPullParserFactory();
-        _parser = _factory.createParser(_source);
+    protected EltnPullParser createParser(Reader reader) throws IOException {
+        return EltnService.createPullParser(reader);
     }
 
-    @After
-    public void tearDown() {
-        _factory = null;
-        _builder = null;
-        _source = null;
-        _parser = null;
-    }
-    
-    protected void push(CharSequence text) {
-        _builder.append(text);
+    private EltnPullParser createParserForText(CharSequence text) throws IOException {
+        return createParser(new StringReader(text.toString()));
     }
 
     @Test
     public void testParseEmpty() throws IOException {
-        push("");
+        _parser = createParserForText("");
         
         assertEquals(EltnError.OK, _parser.getError());
         assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
@@ -89,7 +73,7 @@ public class EltnPullParserTest {
 
     @Test
     public void testParseKeyValue() throws IOException {
-        push("key = 1");
+        _parser = createParserForText("key = 1");
         
         assertEquals(EltnError.OK, _parser.getError());
         assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
@@ -119,7 +103,7 @@ public class EltnPullParserTest {
     
     @Test
     public void testParseKeyValueBoolean() throws IOException {
-        push("key = true");
+        _parser = createParserForText("key = true");
         
         assertEquals(EltnError.OK, _parser.getError());
         assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
@@ -149,7 +133,7 @@ public class EltnPullParserTest {
 
     @Test
     public void testParseKeyValueString() throws IOException {
-        push("key = \"a quoted string\"");
+        _parser = createParserForText("key = \"a quoted string\"");
         
         assertEquals(EltnError.OK, _parser.getError());
         assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
@@ -216,7 +200,7 @@ public class EltnPullParserTest {
 
     public void runStringFormatTest(String input, String expected)
             throws IOException {
-        push("key = " + input);
+        _parser = createParserForText("key = " + input);
         
         assertEquals(EltnError.OK, _parser.getError());
         assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
