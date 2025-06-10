@@ -28,8 +28,6 @@ import com.frank_mitchell.eltnpp.EltnError;
 import com.frank_mitchell.eltnpp.EltnEvent;
 import com.frank_mitchell.eltnpp.EltnPullParser;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Default implementation for {@link EltnPullParser}
@@ -38,42 +36,42 @@ import java.util.regex.Pattern;
  */
 final class DefaultEltnPullParser implements EltnPullParser {
 
-	private final DefaultEltnLexer _lexer;
+    private final DefaultEltnLexer _lexer;
 
-	private EltnEvent _event = EltnEvent.STREAM_START;
-	private EltnError _error = EltnError.OK;
-	private EltnEvent _lastEvent = EltnEvent.STREAM_START;
-	private EltnToken _currToken = null;
+    private EltnEvent _event = EltnEvent.STREAM_START;
+    private EltnError _error = EltnError.OK;
+    private EltnEvent _lastEvent = EltnEvent.STREAM_START;
+    private EltnToken _currToken = null;
 
-	/**
-	 * Constructor for an instance. Should be used only by an [@link
-	 * EltnPullParserFactory}.
-	 *
-	 * @param source a source of Unicode code points.
-	 */
-	public DefaultEltnPullParser(CodePointSource source) {
-		_lexer = new DefaultEltnLexer(source);
-	}
+    /**
+     * Constructor for an instance. Should be used only by an [@link
+     * EltnPullParserFactory}.
+     *
+     * @param source a source of Unicode code points.
+     */
+    public DefaultEltnPullParser(CodePointSource source) {
+        _lexer = new DefaultEltnLexer(source);
+    }
 
-	@Override
-	public boolean hasNext() throws IOException {
-		return _event != EltnEvent.ERROR && _event != EltnEvent.STREAM_END;
-	}
+    @Override
+    public boolean hasNext() throws IOException {
+        return _event != EltnEvent.ERROR && _event != EltnEvent.STREAM_END;
+    }
 
-	@Override
-	public EltnEvent getEvent() {
-		return _event;
-	}
+    @Override
+    public EltnEvent getEvent() {
+        return _event;
+    }
 
-	@Override
-	public EltnError getError() {
-		return _error;
-	}
+    @Override
+    public EltnError getError() {
+        return _error;
+    }
 
-	@Override
-	public CharSequence getText() {
-		return getTextString();
-	}
+    @Override
+    public CharSequence getText() {
+        return getTextString();
+    }
 
     private String getTextString() {
         if (_currToken == null) {
@@ -82,203 +80,251 @@ final class DefaultEltnPullParser implements EltnPullParser {
         return _currToken.text;
     }
 
-	@Override
-	public int getTextOffset() {
-		if (_currToken == null) {
-			return -1;
-		}
-		return _currToken.offset;
-	}
+    @Override
+    public int getTextOffset() {
+        if (_currToken == null) {
+            return -1;
+        }
+        return _currToken.offset;
+    }
 
-	@Override
-	public int getTextLineNumber() {
-		if (_currToken == null) {
-			return -1;
-		}
-		return _currToken.line;
-	}
+    @Override
+    public int getTextLineNumber() {
+        if (_currToken == null) {
+            return -1;
+        }
+        return _currToken.line;
+    }
 
-	@Override
-	public int getTextColumnNumber() {
-		if (_currToken == null) {
-			return -1;
-		}
-		return _currToken.column;
-	}
+    @Override
+    public int getTextColumnNumber() {
+        if (_currToken == null) {
+            return -1;
+        }
+        return _currToken.column;
+    }
 
-	@Override
-	public boolean isInTable() {
-		return getDepth() > 0;
-	}
+    @Override
+    public boolean isInTable() {
+        return getDepth() > 0;
+    }
 
-	@Override
-	public String getString() {
-		// TODO: cache results for subsequent invocations
-		switch(_currToken.type) {
-		case TOKEN_QUOTED_STRING:
-			return unescapeQuotedString(getTextString());
-		case TOKEN_LONG_STRING:
-			return unquoteLongString(getTextString());
-		case TOKEN_COMMENT:
-			return trimComment(getTextString());
-		case TOKEN_LONG_COMMENT:
-			return trimLongComment(getTextString());
-		default:
-			return getTextString();
-		}
-	}
+    @Override
+    public String getString() {
+        // TODO: cache results for subsequent invocations
+        switch (_currToken.type) {
+            case TOKEN_QUOTED_STRING:
+                return unescapeQuotedString(getTextString());
+            case TOKEN_LONG_STRING:
+                return unquoteLongString(getTextString());
+            case TOKEN_COMMENT:
+                return trimComment(getTextString());
+            case TOKEN_LONG_COMMENT:
+                return trimLongComment(getTextString());
+            default:
+                return getTextString();
+        }
+    }
 
-	static String unquoteLongString(CharSequence cs) {
-		return cs.toString();
-	}
+    static String unquoteLongString(CharSequence cs) {
+        return cs.toString();
+    }
 
-	static String trimComment(CharSequence cs) {
-		return cs.toString();
-	}
+    static String trimComment(CharSequence cs) {
+        return cs.toString();
+    }
 
-	static String trimLongComment(CharSequence cs) {
-		return unquoteLongString(cs.subSequence(2, -1)).toString();
-	}
+    static String trimLongComment(CharSequence cs) {
+        return unquoteLongString(cs.subSequence(2, -1));
+    }
 
-	static String unescapeQuotedString(CharSequence cs) {
-		StringBuffer result = new StringBuffer(cs.length());
-		int i = 1; 
-		while (i < cs.length() - 1) {
-			char c = cs.charAt(i);
-			if (c != '\\') {
-				result.append(c);
-				i++;
-				continue;
-			}
+    static String unescapeQuotedString(CharSequence cs) {
+        StringBuilder result = new StringBuilder(cs.length());
+        int i = 1;
+        while (i < cs.length() - 1) {
+            char c = cs.charAt(i);
+            if (c != '\\') {
+                result.append(c);
+                i++;
+                continue;
+            }
             i++;
-			c = cs.charAt(i);
-			switch(c) {
-				case 'a':
-					result.append((char)0x07);
-					i++;
-					break;
-				case 'b':
-					result.append('\b');
+            c = cs.charAt(i);
+            switch (c) {
+                case 'a':
+                    result.append((char) 0x07);
                     i++;
-					break;
-				case 'f':
-					result.append('\f');
-					i++;
-					break;
-				case 'n':
-					result.append('\n');
-					i++;
-					break;
-				case 't':
-					result.append('\t');
-					i++;
-					break;
-				case 'r':
-					result.append('\r');
-					i++;
-					break;
-				case 'v':
-					result.append((char)0x0b);
-					i++;
-					break;
-				case 'u':
-					try {
-						final Pattern unipattern = Pattern.compile("u{(\\p{XDigit}+)}");
-						Matcher match = unipattern.matcher(cs.subSequence(i, cs.length()));
-						String hexdigits = match.group(1);
-						int hexvalue = Integer.parseUnsignedInt(hexdigits, 16);
-						result.appendCodePoint(hexvalue);
-						i += hexdigits.length()+3;
-					} catch (NumberFormatException e) {
-						// Invalid hexdigits, so just leave them alone.
-					}
-					break;
-				case 'x':
-					try {
-						String hexdigits = cs.subSequence(i, i+2).toString();
-						int hexvalue = Integer.parseUnsignedInt(hexdigits, 16);
-						result.append((char)hexvalue);
-						i+=2;
-					} catch (NumberFormatException e) {
-						// Invalid hexdigits, so just leave them alone.
-					}
-					break;
-				case 'z':
-					i++;
-					c = cs.charAt(i);
-					while (DefaultEltnLexer.isEltnSpace(c) && i < cs.length() - 1) {
-						i++;
-						c = cs.charAt(i);
-					}
-					result.append(c);
+                    break;
+                case 'b':
+                    result.append('\b');
                     i++;
-					break;
-				case '0':
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7':
-					try {
-						final Pattern octpattern = Pattern.compile("([0-7]{1,3})");
-						Matcher match = octpattern.matcher(cs.subSequence(i, cs.length()));
-						String octdigits = match.group(1);
-						int value = Integer.parseUnsignedInt(octdigits, 8);
-						result.appendCodePoint(value);
-						i += octdigits.length();
-					} catch (NumberFormatException e) {
-						// Invalid hexdigits, so just leave them alone.
-					}
-					break;
-				default:
-					result.append(c);
-					i++;
-					break;
-			}
-		}
-		return result.toString();
-	}
+                    break;
+                case 'f':
+                    result.append('\f');
+                    i++;
+                    break;
+                case 'n':
+                    result.append('\n');
+                    i++;
+                    break;
+                case 't':
+                    result.append('\t');
+                    i++;
+                    break;
+                case 'r':
+                    result.append('\r');
+                    i++;
+                    break;
+                case 'v':
+                    result.append((char) 0x0b);
+                    i++;
+                    break;
+                case 'u':
+                    i = appendUnicodeEscape(cs, i, result);
+                    break;
+                case 'x':
+                    i = appendHexEscape(cs, i, result);
+                    break;
+                case 'z':
+                    i++;
+                    c = cs.charAt(i);
+                    while (DefaultEltnLexer.isEltnSpace(c) && i < cs.length() - 1) {
+                        i++;
+                        c = cs.charAt(i);
+                    }
+                    result.append(c);
+                    i++;
+                    break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                    i = appendOctalEscape(cs, i, result);
+                    break;
+                default:
+                    result.append(c);
+                    i++;
+                    break;
+            }
+        }
+        return result.toString();
+    }
 
-	@Override
-	public Number getNumber() throws NumberFormatException {
-		return Double.valueOf(getTextString());
-	}
+    private static int appendHexEscape(CharSequence cs, int i, StringBuilder result) {
+        final int max = 3;  // 'x' + two digits
 
-	@Override
-	public int getDepth() {
-		return 0;
-	}
+        if (cs.charAt(i) != 'x' || cs.length() < i + max) {
+            return i;
+        }
+        StringBuilder tmp = new StringBuilder();
+        int j = i + 1;
 
-	@Override
-	public CharSequence getCurrentKeyText() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+        while (j < cs.length() && (j - i) < max) {
+            tmp.append(cs.charAt(j));
+            j++;
+        }
+        appendCode(result, tmp.toString(), 16);
+        return j;
+    }
 
-	@Override
-	public EltnEvent getCurrentKeyType() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    private static int appendOctalEscape(CharSequence cs, int i, StringBuilder result) {
+        StringBuilder tmp = new StringBuilder();
+        int j = i;
+        while (isOctalDigit(cs.charAt(j)) && j < cs.length() && (j - i) < 3) {
+            tmp.append(cs.charAt(j));
+            j++;
+        }
+        appendCode(result, tmp.toString(), 8);
+        return j;
+    }
 
-	@Override
-	public CharSequence getCurrentPath() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    private static int appendUnicodeEscape(CharSequence cs, int i, StringBuilder result) {
+        int j = i;
+        int max = 9;
+        StringBuilder tmp = new StringBuilder();
+        if (cs.charAt(i) == 'u' && cs.charAt(i + 1) == '{') {
+            j = i + 2;
+            while (cs.charAt(j) != '}' && j < cs.length() && (j - i) < max) {
+                char c = cs.charAt(j);
+                tmp.append(c);
+                j++;
+            }
+            if (cs.charAt(j) == '}') {
+                appendCode(result, tmp.toString(), 16);
+                j++; // bypass the final '}'
+            }
+        }
+        return j;
+    }
 
-	/* --------------------------- Parser --------------------------------- */
+    private static void appendCode(StringBuilder result, String digits, int radix) {
+        try {
+            int univalue = Integer.parseUnsignedInt(digits, radix);
+            if (univalue <= 0x10FFFF) {
+                result.appendCodePoint(univalue);
+            }
+        } catch (NumberFormatException e) {
+            // Invalid hexdigits, so just leave them alone.
+        }
+    }
 
-	@Override
-	public void next() throws IOException {
-		if (!hasNext()) {
-			return;
-		}
+    private static boolean isOctalDigit(int c) {
+        switch (c) {
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+                return true;
+            default:
+                return false;
+        }
+    }
 
-		if (_event != EltnEvent.COMMENT) {
-			_lastEvent = _event;
-		}
+    @Override
+    public Number getNumber() throws NumberFormatException {
+        return Double.valueOf(getTextString());
+    }
 
-		EltnToken token = _lexer.nextToken();
+    @Override
+    public int getDepth() {
+        return 0;
+    }
+
+    @Override
+    public CharSequence getCurrentKeyText() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public EltnEvent getCurrentKeyType() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public CharSequence getCurrentPath() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /* --------------------------- Parser --------------------------------- */
+    @Override
+    public void next() throws IOException {
+        if (!hasNext()) {
+            return;
+        }
+
+        if (_event != EltnEvent.COMMENT) {
+            _lastEvent = _event;
+        }
+
+        EltnToken token = _lexer.nextToken();
 
         if (null == token.type) {
             _event = EltnEvent.ERROR;
@@ -286,51 +332,51 @@ final class DefaultEltnPullParser implements EltnPullParser {
             _currToken = token;
             return;
         }
- 
-		switch (_lastEvent) {
-			case STREAM_START:
+
+        switch (_lastEvent) {
+            case STREAM_START:
                 handleStreamStart(token);
-				break;
+                break;
 
-			case COMMENT:
-				/* expect based on prior non-comment state */
-				break;
+            case COMMENT:
+                /* expect based on prior non-comment state */
+                break;
 
-			case DEF_NAME:
-			case TABLE_KEY_STRING:
-			case TABLE_KEY_NUMBER:
-			case TABLE_KEY_INTEGER:
+            case DEF_NAME:
+            case TABLE_KEY_STRING:
+            case TABLE_KEY_NUMBER:
+            case TABLE_KEY_INTEGER:
                 handleKeyDefinition(token);
-				break;
+                break;
 
-			case VALUE_FALSE:
-			case VALUE_NIL:
-			case VALUE_TRUE:
-			case VALUE_INTEGER:
-			case VALUE_NUMBER:
-			case VALUE_STRING:
+            case VALUE_FALSE:
+            case VALUE_NIL:
+            case VALUE_TRUE:
+            case VALUE_INTEGER:
+            case VALUE_NUMBER:
+            case VALUE_STRING:
                 handleNewEntryOrClose(token);
-				break;
+                break;
 
-			case TABLE_START:
-				/* expect a TABLE_KEY_*, VALUE_*, TABLE_START, or TABLE_END */
-				break;
+            case TABLE_START:
+                /* expect a TABLE_KEY_*, VALUE_*, TABLE_START, or TABLE_END */
+                break;
 
             case TABLE_END:
-				/* expect a COMMA, SEMICOLON, or TABLE_END (if depth > 0) */
-				break;
+                /* expect a COMMA, SEMICOLON, or TABLE_END (if depth > 0) */
+                break;
 
             default:
-				/* end state; do nothing */
-				break;
-		}
-	}
+                /* end state; do nothing */
+                break;
+        }
+    }
 
     private void handleNewEntryOrClose(EltnToken token) {
         /* expect a COMMA (if depth > 0) or SEMICOLON */
-        /* expect another TABLE_KEY_*, a VALUE_*. or a TABLE_START */
-        /* else if depth > 0 expect a TABLE_END */
-        /* else expect a STREAM_END */
+ /* expect another TABLE_KEY_*, a VALUE_*. or a TABLE_START */
+ /* else if depth > 0 expect a TABLE_END */
+ /* else expect a STREAM_END */
         if (token.type == EltnTokenType.TOKEN_END_OF_STREAM) {
             _event = EltnEvent.STREAM_END;
             _currToken = token;

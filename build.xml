@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="ELTNPP - ELTN Pull Parser in Java" default="all">
 
+    <property name="etc" location="etc" />
     <property name="src" location="src" />
     <property name="test" location="test" />
     <property name="lib" location="lib" />
@@ -20,7 +21,6 @@
     <property name="src.build.dir" location="${build.dir}/classes" />
     <property name="test.build.dir" location="${build.dir}/test/classes" />
     <property name="test.report.dir" location="${build.dir}/test/reports" />
-    <property name="lib.codepoint" location="lib/codepoint.jar" />
 
     <path id="build.classpath">
         <pathelement location="${lib.codepoint}" />
@@ -84,7 +84,10 @@
     </target>
 
     <target name="jar" depends="compile">
-        <jar destfile="${jar.name}" basedir="${src.build.dir}" />
+        <jar destfile="${jar.name}">
+            <fileset dir="${etc}" includes="META-INF/" />
+            <fileset dir="${src.build.dir}" />
+        </jar>
      </target>
 
     <target name="doc">

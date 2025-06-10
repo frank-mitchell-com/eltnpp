@@ -197,7 +197,7 @@ public class EltnPullParserTest {
 
     @Test
     public void testHexEscapes() throws IOException {
-        runStringFormatTest("'this text had \\x68\\65\\x78 escapes\\x2E'",
+        runStringFormatTest("'this text had \\x68\\x65\\x78 escapes\\x2E'",
                             "this text had hex escapes.");
     }
 

@@ -40,6 +40,16 @@ import java.nio.charset.StandardCharsets;
  */
 public interface EltnPullParserFactory {
     /**
+     * Whether this factory's parsers can handle this particular character
+     * set.  Reimplement this method if the EltnPullParsers produced by this
+     * object only handle a limited range of character sets, e.g.
+     * {@link StandardCharsets#US_ASCII} or {@link StandardCharsets#ISO_8859_1}.
+     */
+    default boolean includesCharset(Charset cs) {
+        return true;
+    }
+
+    /**
      * Creates a parser to process UTF-16 characters.
      * In other words, a stream of Java {@code char}s.
      *
@@ -49,17 +59,6 @@ public interface EltnPullParserFactory {
      */
     default EltnPullParser createParser(Reader reader) throws IOException {
         return createParser(CodePoint.getSource(reader, StandardCharsets.UTF_16));
-    }
-
-    /**
-     * Creates a parser to process UTF-8 characters.
-     *
-     * @param stream a stream of UTF-8 bytes.
-     * @return a parser for the stream.
-     * @throws IOException if the stream throws an exception.
-     */
-    default EltnPullParser createUtf8Parser(InputStream stream) throws IOException {
-        return createParser(stream, StandardCharsets.UTF_8);
     }
 
     /**
