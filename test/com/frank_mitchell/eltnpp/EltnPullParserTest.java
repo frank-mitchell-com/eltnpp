@@ -31,10 +31,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.frank_mitchell.eltnpp.EltnError;
-import com.frank_mitchell.eltnpp.EltnEvent;
-import com.frank_mitchell.eltnpp.EltnPullParser;
-import com.frank_mitchell.eltnpp.EltnService;
 import java.io.Reader;
 import java.io.StringReader;
 
