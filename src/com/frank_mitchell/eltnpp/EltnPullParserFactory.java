@@ -60,9 +60,7 @@ public interface EltnPullParserFactory {
      * @return a parser for the reader.
      * @throws IOException if the reader throws an exception.
      */
-    default EltnPullParser createParser(Reader reader) throws IOException {
-        return createParser(CodePoint.getSource(reader, StandardCharsets.UTF_16));
-    }
+    EltnPullParser createParser(Reader reader) throws IOException;
 
     /**
      * Creates a parser to process bytes in the specified encoding.
@@ -72,10 +70,8 @@ public interface EltnPullParserFactory {
      * @return a parser for the stream.
      * @throws IOException if the stream throws an exception.
      */
-    default EltnPullParser createParser(InputStream stream, Charset cs)
-            throws IOException {
-        return createParser(CodePoint.getSource(stream, cs));
-    }
+    EltnPullParser createParser(InputStream stream, Charset cs)
+            throws IOException;
 
     /**
      * Creates a parser to process a stream of Unicode code points.

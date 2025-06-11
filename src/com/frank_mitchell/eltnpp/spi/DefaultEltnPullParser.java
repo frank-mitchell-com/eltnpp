@@ -126,19 +126,19 @@ final class DefaultEltnPullParser implements EltnPullParser {
         }
     }
 
-    static String unquoteLongString(CharSequence cs) {
+    private static String unquoteLongString(CharSequence cs) {
         return cs.toString();
     }
 
-    static String trimComment(CharSequence cs) {
+    private static String trimComment(CharSequence cs) {
         return cs.toString();
     }
 
-    static String trimLongComment(CharSequence cs) {
+    private static String trimLongComment(CharSequence cs) {
         return unquoteLongString(cs.subSequence(2, -1));
     }
 
-    static String unescapeQuotedString(CharSequence cs) {
+    private static String unescapeQuotedString(CharSequence cs) {
         StringBuilder result = new StringBuilder(cs.length());
         int i = 1;
         while (i < cs.length() - 1) {

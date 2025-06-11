@@ -23,22 +23,53 @@
  */
 package com.frank_mitchell.eltnpp.spi;
 
+import com.frank_mitchell.codepoint.CodePoint;
 import com.frank_mitchell.codepoint.CodePointSource;
 import com.frank_mitchell.eltnpp.EltnPullParser;
 import com.frank_mitchell.eltnpp.EltnPullParserFactory;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Factory object for {@link DefaultEltnPullParser}.
- * 
+ *
  * @author Frank Mitchell
  */
 public class DefaultEltnPullParserFactory implements EltnPullParserFactory {
-    
+
     /**
      * Default constructor.
      */
     public DefaultEltnPullParserFactory() {
+    }
+
+    /**
+     * Creates a parser to process UTF-16 characters.
+     * In other words, a stream of Java {@code char}s.
+     *
+     * @param reader a stream of UTF-16 chars.
+     * @return a parser for the reader.
+     * @throws IOException if the reader throws an exception.
+     */
+    @Override
+    public EltnPullParser createParser(Reader reader) throws IOException {
+        return createParser(CodePoint.getSource(reader, StandardCharsets.UTF_16));
+    }
+
+    /**
+     * Creates a parser to process bytes in the specified encoding.
+     *
+     * @param stream a stream of bytes.
+     * @param cs a character encoding.
+     * @return a parser for the stream.
+     * @throws IOException if the stream throws an exception.
+     */
+    @Override
+    public EltnPullParser createParser(InputStream stream, Charset cs) throws IOException {
+        return createParser(CodePoint.getSource(stream, cs));
     }
 
     @Override
