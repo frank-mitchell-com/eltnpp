@@ -40,6 +40,9 @@ import java.util.ServiceLoader;
  */
 public final class EltnService {
 
+    /**
+     * Constant for "UTF-32".
+     */
     public static final Charset UTF_32 = Charset.forName("UTF-32");
 
     private EltnService() {
@@ -75,8 +78,7 @@ public final class EltnService {
     private static System.Logger getLogger() {
         Module module = EltnService.class.getModule();
         System.LoggerFinder loggerFinder = System.LoggerFinder.getLoggerFinder();
-        System.Logger logger = loggerFinder.getLogger("ELTN", module);
-        return logger;
+        return loggerFinder.getLogger("ELTN", module);
     }
 
     /**

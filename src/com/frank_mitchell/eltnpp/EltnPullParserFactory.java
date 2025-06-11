@@ -44,6 +44,9 @@ public interface EltnPullParserFactory {
      * set.  Reimplement this method if the EltnPullParsers produced by this
      * object only handle a limited range of character sets, e.g.
      * {@link StandardCharsets#US_ASCII} or {@link StandardCharsets#ISO_8859_1}.
+     * 
+     * @param cs the Charset for which to test
+     * @return whether the parsers process this Charset
      */
     default boolean includesCharset(Charset cs) {
         return true;
