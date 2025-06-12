@@ -24,7 +24,6 @@
 package com.frank_mitchell.eltnpp;
 
 import com.frank_mitchell.codepoint.CodePointSource;
-import com.frank_mitchell.codepoint.CodePoint;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -41,7 +40,7 @@ import java.nio.charset.StandardCharsets;
 public interface EltnPullParserFactory {
     /**
      * Whether this factory's parsers can handle this particular character
-     * set.  Reimplement this method if the EltnPullParsers produced by this
+     * set. Reimplement this method if the EltnPullParsers produced by this
      * object only handle a limited range of character sets, e.g.
      * {@link StandardCharsets#US_ASCII} or {@link StandardCharsets#ISO_8859_1}.
      * 
@@ -66,7 +65,7 @@ public interface EltnPullParserFactory {
      * Creates a parser to process bytes in the specified encoding.
      *
      * @param stream a stream of bytes.
-     * @param cs a character encoding.
+     * @param cs     a character encoding.
      * @return a parser for the stream.
      * @throws IOException if the stream throws an exception.
      */

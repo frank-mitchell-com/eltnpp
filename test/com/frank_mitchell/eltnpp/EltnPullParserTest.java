@@ -40,151 +40,140 @@ import java.io.StringReader;
  * @author Frank Mitchell
  */
 public class EltnPullParserTest {
-    
-    private EltnPullParser _parser;
 
     protected EltnPullParser createParser(Reader reader) throws IOException {
         return EltnService.createPullParser(reader);
     }
 
-    private EltnPullParser createParserForText(CharSequence text) throws IOException {
-        return createParser(new StringReader(text.toString()));
+    private EltnPullParser createParserForText(String text) throws IOException {
+        return createParser(new StringReader(text));
     }
 
     @Test
     public void testParseEmpty() throws IOException {
-        _parser = createParserForText("");
-        
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertTrue(_parser.hasNext());
+        EltnPullParser parser = createParserForText("");
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertFalse(_parser.hasNext());
-    }    
+        assertStreamStart(parser);
+
+        parser.next();
+        assertStreamEnd(parser);
+    }
+
+    private void assertStreamStart(EltnPullParser parser) throws IOException {
+        assertEquals(EltnError.OK, parser.getError());
+        assertEquals(EltnEvent.STREAM_START, parser.getEvent());
+        assertFalse(parser.isInTable());
+        assertTrue(parser.hasNext());
+    }
+
+    private void assertStreamEnd(EltnPullParser parser) throws IOException {
+        assertEquals(EltnError.OK, parser.getError());
+        assertEquals(EltnEvent.STREAM_END, parser.getEvent());
+        assertFalse(parser.isInTable());
+        assertFalse(parser.hasNext());
+    }
 
     @Test
     public void testParseKeyValue() throws IOException {
-        _parser = createParserForText("key = 1");
-        
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertTrue(_parser.hasNext());
+        EltnPullParser parser = createParserForText("key = 1");
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.DEF_NAME, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertEquals("key", _parser.getString());
-        assertTrue(_parser.hasNext());
+        assertStreamStart(parser);
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.VALUE_NUMBER, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertEquals(1.0, _parser.getNumber());
-        assertTrue(_parser.hasNext());
+        parser.next();
+        assertDefName(parser, "key");
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertFalse(_parser.hasNext());
-    }    
-    
+        parser.next();
+        assertEvent(parser, EltnEvent.VALUE_NUMBER, "1");
+        assertFalse(parser.isInTable());
+        assertEquals(1.0, parser.getNumber());
+
+        parser.next();
+        assertStreamEnd(parser);
+    }
+
+    private void assertDefName(EltnPullParser parser, String name) throws IOException {
+        assertEvent(parser, EltnEvent.DEF_NAME, name);
+        assertFalse(parser.isInTable());
+        assertEquals(name, parser.getString());
+    }
+
+    private void assertEvent(EltnPullParser parser, EltnEvent event, CharSequence text)
+            throws IOException {
+        assertEquals(EltnError.OK, parser.getError());
+        assertEquals(event, parser.getEvent());
+        assertEquals(text, parser.getText());
+        assertTrue(parser.hasNext());
+    }
+
     @Test
     public void testParseKeyValueBoolean() throws IOException {
-        _parser = createParserForText("key = true");
-        
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertTrue(_parser.hasNext());
+        EltnPullParser parser = createParserForText("key = true");
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.DEF_NAME, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertEquals("key", _parser.getString());
-        assertTrue(_parser.hasNext());
+        assertStreamStart(parser);
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.VALUE_TRUE, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertEquals(true, _parser.getBoolean());
-        assertTrue(_parser.hasNext());
+        parser.next();
+        assertDefName(parser, "key");
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertFalse(_parser.hasNext());
-    } 
+        parser.next();
+        assertEvent(parser, EltnEvent.VALUE_TRUE, "true");
+        assertFalse(parser.isInTable());
+        assertEquals(true, parser.getBoolean());
+
+        parser.next();
+        assertStreamEnd(parser);
+    }
 
     @Test
     public void testParseKeyValueString() throws IOException {
-        _parser = createParserForText("key = \"a quoted string\"");
-        
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertTrue(_parser.hasNext());
+        EltnPullParser parser = createParserForText("key = \"a quoted string\"");
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.DEF_NAME, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertEquals("key", _parser.getString());
-        assertTrue(_parser.hasNext());
+        assertStreamStart(parser);
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.VALUE_STRING, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertEquals("a quoted string", _parser.getString());
-        assertTrue(_parser.hasNext());
+        parser.next();
+        assertDefName(parser, "key");
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertFalse(_parser.hasNext());
+        parser.next();
+        assertEvent(parser, EltnEvent.VALUE_STRING, "\"a quoted string\"");
+        assertFalse(parser.isInTable());
+        assertEquals("a quoted string", parser.getString());
+
+        parser.next();
+        assertStreamEnd(parser);
     }
 
     @Test
     public void testSimpleEscapes() throws IOException {
-        runStringFormatTest("'\\a\\b\\f\\n\\r\\t\\v\\\\'",
-                            "\u0007\b\f\n\r\t\u000B\\");
+        runStringFormatTest(
+                "'\\a\\b\\f\\n\\r\\t\\v\\\\'",
+                "\u0007\b\f\n\r\t\u000B\\");
     }
 
     @Test
     public void testEscapedNewline() throws IOException {
-        runStringFormatTest("'this text has an \\\nescaped newline'",
-                            "this text has an \nescaped newline");
+        runStringFormatTest(
+                "'this text has an \\\nescaped newline'",
+                "this text has an \nescaped newline");
     }
 
     @Test
     public void testBackslashZ() throws IOException {
-        runStringFormatTest("'this text has not \\z\n\t    a newline'",
-                            "this text has not a newline");
+        runStringFormatTest(
+                "'this text has not \\z\n\t    a newline'",
+                "this text has not a newline");
     }
 
     @Test
     public void testHexEscapes() throws IOException {
-        runStringFormatTest("'this text had \\x68\\x65\\x78 escapes\\x2E'",
-                            "this text had hex escapes.");
+        runStringFormatTest(
+                "'this text had \\x68\\x65\\x78 escapes\\x2E'",
+                "this text had hex escapes.");
     }
 
     @Test
     public void testOctalEscapes() throws IOException {
-        runStringFormatTest("'this text had octal escapes\\56\\56\\056\\0'",
-                            "this text had octal escapes...\0");
+        runStringFormatTest(
+                "'this text had octal escapes\\56\\56\\056\\0'",
+                "this text had octal escapes...\0");
     }
 
     @Test
@@ -196,31 +185,20 @@ public class EltnPullParserTest {
 
     public void runStringFormatTest(String input, String expected)
             throws IOException {
-        _parser = createParserForText("key = " + input);
-        
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_START, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertTrue(_parser.hasNext());
+        EltnPullParser parser = createParserForText("key = " + input);
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.DEF_NAME, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertEquals("key", _parser.getString());
-        assertTrue(_parser.hasNext());
+        assertStreamStart(parser);
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.VALUE_STRING, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertEquals(expected, _parser.getString());
-        assertTrue(_parser.hasNext());
+        parser.next();
+        assertDefName(parser, "key");
 
-        _parser.next();
-        assertEquals(EltnError.OK, _parser.getError());
-        assertEquals(EltnEvent.STREAM_END, _parser.getEvent());
-        assertFalse(_parser.isInTable());
-        assertFalse(_parser.hasNext());
+        parser.next();
+        assertEvent(parser, EltnEvent.VALUE_STRING, input);
+        assertFalse(parser.isInTable());
+        assertEquals(expected, parser.getString());
+
+        parser.next();
+        assertStreamEnd(parser);
     }
 }
+
