@@ -41,7 +41,7 @@ class DefaultEltnLexer {
 
     private static final String[] RESERVED_WORDS_ARRAY = {
         "and", "break", "do", "else", "elseif", "end",
-        "false", "for", "function", "global", "goto", "if", "in",
+        "false", "for", "function", "goto", "if", "in",
         "local", "nil", "not", "or", "repeat", "return",
         "then", "true", "until", "while"
     };
